@@ -1,0 +1,28 @@
+'use client';
+
+import { useEffect } from 'react';
+import { APP_ROUTES } from '@/routes/app';
+import { signOut } from 'next-auth/react';
+
+const SignOut = () => {
+	useEffect(() => {
+		const singOutUser = async () => {
+			await signOut({
+				redirect: true,
+				callbackUrl: APP_ROUTES.AUTH.SIGN_IN,
+			});
+		};
+
+		singOutUser()
+			.then(() => {
+				console.log('User has signed out successfully!');
+			})
+			.catch((error) => {
+				console.error('User has failed to sign out!', error);
+			});
+	}, []);
+
+	return null;
+};
+
+export default SignOut;
