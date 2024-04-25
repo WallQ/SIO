@@ -1,6 +1,9 @@
 export const APP_ROUTES = {
 	HOME: '/',
-	DASHBOARD: '/dashboard',
+	DASHBOARD: {
+		ROOT: '/dashboard',
+		BILLING: '/dashboard/billing',
+	},
 	TERMS: '/terms',
 	PRIVACY: '/privacy',
 	MAINTENANCE: '/maintenance',
