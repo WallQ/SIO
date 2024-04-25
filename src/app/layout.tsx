@@ -8,7 +8,7 @@ import { GeistSans } from 'geist/font/sans';
 import { config } from '@/config/app';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { ThemeProvider } from '@/components/theme-provider';
+import ThemeProvider from '@/components/theme-provider';
 
 export const metadata: Metadata = {
 	authors: [
@@ -124,8 +124,7 @@ export default function RootLayout({
 				<TRPCReactProvider>
 					<ThemeProvider
 						attribute='class'
-						defaultTheme='light'
-						enableSystem
+						defaultTheme='dark'
 						disableTransitionOnChange>
 						{children}
 						<Toaster />
