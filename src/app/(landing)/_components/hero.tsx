@@ -3,12 +3,16 @@
 import Link from 'next/link';
 import { APP_ROUTES } from '@/routes/app';
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 import Balancer from 'react-wrap-balancer';
 
 import { buttonVariants } from '@/components/ui/button';
 
-import Particles from './particles';
+import Glow from './ui/glow';
+import InnerWrapper from './ui/inner-wrapper';
+import OuterWrapper from './ui/outer-wrapper';
+import Particles from './ui/particles';
+import { Heading, Paragraph } from './ui/typography';
 
 const Hero: React.FunctionComponent = (): React.ReactNode => {
 	const FADE_DOWN_ANIMATION_VARIANTS = {
@@ -29,36 +33,36 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 				},
 			}}>
 			<section id='hero' className='h-screen'>
-				<div className='relative mx-auto h-full max-w-7xl px-4 sm:px-6 lg:px-8'>
+				<OuterWrapper>
 					<Particles
 						className='pointer-events-none absolute inset-0 -z-10'
 						quantity={50}
 					/>
-					<div className='mx-auto flex h-full max-w-5xl flex-col items-center justify-center gap-12'>
+					<Glow position='bottom' />
+					<InnerWrapper styles='gap-12'>
 						<div className='flex flex-col items-center justify-between gap-6 text-center'>
-							<motion.h1
-								className='bg-gradient-to-r from-primary/60 via-primary to-primary/60 bg-clip-text text-6xl font-extrabold tracking-tight text-transparent lg:text-7xl'
-								variants={FADE_DOWN_ANIMATION_VARIANTS}>
-								<Balancer>
-									Sistemas de Informação Organizacionais
-								</Balancer>
-							</motion.h1>
-							<motion.p
-								className='text-lg leading-7 text-muted-foreground'
-								variants={FADE_DOWN_ANIMATION_VARIANTS}>
-								Lorem ipsum, dolor sit amet consectetur
-								adipisicing elit.
-							</motion.p>
+							<motion.div variants={FADE_DOWN_ANIMATION_VARIANTS}>
+								<Heading level={1}>
+									<Balancer>
+										Sistemas de Informação Organizacionais
+									</Balancer>
+								</Heading>
+							</motion.div>
+							<motion.div variants={FADE_DOWN_ANIMATION_VARIANTS}>
+								<Paragraph>
+									Lorem ipsum, dolor sit amet consectetur
+									adipisicing elit.
+								</Paragraph>
+							</motion.div>
 						</div>
 						<motion.div
 							className='flex gap-4'
 							variants={FADE_DOWN_ANIMATION_VARIANTS}>
 							<Link
 								href={APP_ROUTES.DASHBOARD.ROOT}
-								className={buttonVariants({
-									variant: 'default',
-								})}>
+								className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
 								Get Started
+								<ArrowRight className='ml-2 size-4' />
 							</Link>
 							<a
 								href='https://github.com/WallQ/SIO'
@@ -72,8 +76,8 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 								<ExternalLink className='ml-2 h-4 w-4' />
 							</a>
 						</motion.div>
-					</div>
-				</div>
+					</InnerWrapper>
+				</OuterWrapper>
 			</section>
 		</motion.div>
 	);

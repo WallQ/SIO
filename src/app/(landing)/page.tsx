@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 
 import ScrollToTop from '@/components/scroll-to-top';
 
+import Cta from './_components/cta';
 import Faq from './_components/faq';
 import Features from './_components/features';
 import Footer from './_components/footer';
@@ -18,6 +19,7 @@ export default async function Homepage() {
 				<Features />
 				<Pricing />
 				<Faq />
+				<Cta />
 			</main>
 			<ScrollToTop />
 			<Footer />
