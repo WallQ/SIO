@@ -48,6 +48,22 @@
 			"type": "image/png"
 		}
 	],
+	"screenshots": [
+		{
+			"src": "/screenshot-wide.png",
+			"sizes": "1440x900",
+			"type": "image/png",
+			"form_factor": "wide",
+			"label": "SIO"
+		},
+		{
+			"src": "/screenshot-narrow.png",
+			"sizes": "2796x1290",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "SIO"
+		}
+	],
 	"theme_color": "#ffffff",
 	"background_color": "#ffffff",
 	"start_url": "/",

@@ -53,7 +53,7 @@ const Pricing: React.FunctionComponent = (): React.ReactNode => {
 						<Paragraph>
 							<Balancer>
 								Choose the plan that best fits your needs. All
-								plans include a 30-day free trial.
+								plans include a 7-day free trial.
 							</Balancer>
 						</Paragraph>
 					</div>
