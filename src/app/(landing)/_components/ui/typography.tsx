@@ -18,11 +18,11 @@ export const Heading: React.FunctionComponent<HeadingProps> = ({
 
 	switch (level) {
 		case 1:
-			textStyle = 'text-6xl';
+			textStyle = 'text-5xl lg:text-6xl';
 			fontWeight = 'font-extrabold';
 			break;
 		case 2:
-			textStyle = 'text-4xl';
+			textStyle = 'text-3xl lg:text-4xl';
 			fontWeight = 'font-bold';
 			break;
 		case 3:

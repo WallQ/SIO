@@ -34,36 +34,36 @@ const Features: React.FunctionComponent = (): React.ReactNode => {
 		<section id='features' className='overflow-hidden border-t'>
 			<OuterWrapper>
 				<InnerWrapper styles='lg:flex-row items-start'>
-					<div className='order-last flex max-w-2xl flex-shrink-0 flex-col gap-6 lg:order-none'>
-						<div className='flex flex-col items-start justify-between gap-6'>
+					<div className='flex w-full flex-shrink-0 flex-col gap-6 lg:max-w-2xl'>
+						<div className='flex flex-col items-center gap-6 lg:items-start'>
 							<Span>Features</Span>
 							<Heading level={2}>
 								Everything You&apos;ll Ever Need
 							</Heading>
-							<Paragraph>
+							<Paragraph styles='text-center lg:text-start'>
 								<Balancer>
 									Discover a suite of essential tools tailored
 									for your data needs.
 								</Balancer>
 							</Paragraph>
 						</div>
-						<dl className='flex flex-col gap-4'>
+						<dl className='grid grid-cols-2 gap-4 lg:flex lg:flex-col'>
 							{features.map((feature) => (
 								<div
 									key={feature.name}
-									className='flex flex-col'>
+									className='flex flex-col items-center lg:items-start'>
 									<div className='flex items-center gap-2 '>
 										<feature.icon className='size-4' />
 										<span>{feature.name}</span>
 									</div>
-									<Paragraph styles='text-sm'>
+									<Paragraph styles='text-sm text-center lg:text-start'>
 										{feature.description}
 									</Paragraph>
 								</div>
 							))}
 						</dl>
 					</div>
-					<div className='lg:l-32 order-first lg:order-none lg:flex'>
+					<div className='lg:l-32 lg:flex'>
 						<div className='max-w-none flex-none'>
 							<Image
 								src='/assets/images/dashboard-screenshot.png'
