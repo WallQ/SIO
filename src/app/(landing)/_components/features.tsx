@@ -35,12 +35,12 @@ const Features: React.FunctionComponent = (): React.ReactNode => {
 			<OuterWrapper>
 				<InnerWrapper styles='lg:flex-row items-start'>
 					<div className='flex w-full flex-shrink-0 flex-col gap-6 lg:max-w-2xl'>
-						<div className='flex flex-col items-center gap-6 lg:items-start'>
+						<div className='flex flex-col items-center gap-6 text-center lg:items-start lg:text-start'>
 							<Span>Features</Span>
 							<Heading level={2}>
 								Everything You&apos;ll Ever Need
 							</Heading>
-							<Paragraph styles='text-center lg:text-start'>
+							<Paragraph>
 								<Balancer>
 									Discover a suite of essential tools tailored
 									for your data needs.

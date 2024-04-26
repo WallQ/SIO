@@ -27,30 +27,35 @@ const testimonials = [
 		username: '@h4zaky',
 		name: 'Carlos Leite',
 		review: 'I love issuing invoices.',
+		url: 'https://github.com/h4zaky',
 	},
 	{
 		image: 'https://github.com/joaovieira13.png',
 		username: '@joaovieira13',
 		name: 'João Vieira',
 		review: `Those bmpn's were crazy.`,
+		url: 'https://github.com/joaovieira13',
 	},
 	{
 		image: 'https://github.com/pedrotiago70.png',
 		username: '@pedrotiago70',
 		name: 'Pedro Tiago',
 		review: 'This year I will pass this curricular unit.',
+		url: 'https://github.com/pedrotiago70',
 	},
 	{
 		image: 'https://github.com/rafaelferraz2002.png',
 		username: '@rafaelferraz2002',
 		name: 'Rafael Ferraz',
 		review: 'That hairdryer was too expensive.',
+		url: 'https://github.com/rafaelferraz2002',
 	},
 	{
 		image: 'https://github.com/wallq.png',
 		username: '@wallq',
 		name: 'Sérgio Félix',
 		review: `This wasn't even painful to do.`,
+		url: 'https://github.com/wallq',
 	},
 ];
 
@@ -91,36 +96,46 @@ const Cta: React.FunctionComponent = (): React.ReactNode => {
 								<CarouselItem
 									key={testimonial.name}
 									className='md:basis-1/2 lg:basis-1/3'>
-									<Card className='h-full bg-primary-foreground'>
-										<CardContent className='flex h-full flex-col gap-4 px-8 py-6'>
-											<div className='flex items-center gap-4'>
-												<Avatar className='size-8'>
-													<AvatarImage
-														src={testimonial.image}
-														alt={
-															testimonial.username
-														}
-													/>
-													<AvatarFallback>
-														{getInitials(
-															testimonial.image,
-														)}
-													</AvatarFallback>
-												</Avatar>
-												<div className='flex flex-col'>
-													<span>
-														{testimonial.name}
-													</span>
-													<span className='text-xs text-muted-foreground'>
-														{testimonial.username}
-													</span>
+									<a
+										href={testimonial.url}
+										target='_blank'
+										rel='noopener noreferrer'
+										aria-label={testimonial.username}>
+										<Card className='h-full bg-primary-foreground transition-all duration-150 ease-linear hover:bg-transparent'>
+											<CardContent className='flex h-full flex-col gap-4 px-8 py-6'>
+												<div className='flex items-center gap-4'>
+													<Avatar className='size-8'>
+														<AvatarImage
+															src={
+																testimonial.image
+															}
+															alt={
+																testimonial.username
+															}
+														/>
+														<AvatarFallback>
+															{getInitials(
+																testimonial.image,
+															)}
+														</AvatarFallback>
+													</Avatar>
+													<div className='flex flex-col'>
+														<span>
+															{testimonial.name}
+														</span>
+														<span className='text-xs text-muted-foreground'>
+															{
+																testimonial.username
+															}
+														</span>
+													</div>
 												</div>
-											</div>
-											<Paragraph styles='text-sm text-primary'>
-												{testimonial.review}
-											</Paragraph>
-										</CardContent>
-									</Card>
+												<Paragraph styles='text-sm text-primary'>
+													{testimonial.review}
+												</Paragraph>
+											</CardContent>
+										</Card>
+									</a>
 								</CarouselItem>
 							))}
 						</CarouselContent>
