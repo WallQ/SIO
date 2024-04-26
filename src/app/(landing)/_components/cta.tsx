@@ -6,14 +6,14 @@ import Autoplay from 'embla-carousel-autoplay';
 import { ArrowRight } from 'lucide-react';
 import Balancer from 'react-wrap-balancer';
 
-
-
 import { getInitials } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-
-
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+} from '@/components/ui/carousel';
 
 import Glow from './ui/glow';
 import InnerWrapper from './ui/inner-wrapper';
@@ -21,19 +21,18 @@ import OuterWrapper from './ui/outer-wrapper';
 import Particles from './ui/particles';
 import { Heading, Paragraph, Span } from './ui/typography';
 
-
 const testimonials = [
 	{
 		image: 'https://github.com/h4zaky.png',
 		username: '@h4zaky',
 		name: 'Carlos Leite',
-		review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+		review: 'I love issuing invoices.',
 	},
 	{
 		image: 'https://github.com/joaovieira13.png',
 		username: '@joaovieira13',
 		name: 'João Vieira',
-		review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+		review: `Those bmpn's were crazy.`,
 	},
 	{
 		image: 'https://github.com/pedrotiago70.png',
@@ -45,13 +44,13 @@ const testimonials = [
 		image: 'https://github.com/rafaelferraz2002.png',
 		username: '@rafaelferraz2002',
 		name: 'Rafael Ferraz',
-		review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+		review: 'That hairdryer was too expensive.',
 	},
 	{
 		image: 'https://github.com/wallq.png',
 		username: '@wallq',
 		name: 'Sérgio Félix',
-		review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+		review: `This wasn't even painful to do.`,
 	},
 ];
 
@@ -91,8 +90,8 @@ const Cta: React.FunctionComponent = (): React.ReactNode => {
 								<CarouselItem
 									key={testimonial.name}
 									className='md:basis-1/2 lg:basis-1/3'>
-									<Card className='bg-primary-foreground transition-colors duration-150 ease-linear'>
-										<CardContent className='flex flex-col gap-4 px-8 py-6'>
+									<Card className='h-full bg-primary-foreground'>
+										<CardContent className='flex h-full flex-col gap-4 px-8 py-6'>
 											<div className='flex items-center gap-4'>
 												<Avatar className='size-8'>
 													<AvatarImage
