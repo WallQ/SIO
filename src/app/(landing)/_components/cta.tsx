@@ -84,7 +84,8 @@ const Cta: React.FunctionComponent = (): React.ReactNode => {
 							Autoplay({
 								delay: 2250,
 							}),
-						]}>
+						]}
+						className='w-full'>
 						<CarouselContent>
 							{testimonials.map((testimonial) => (
 								<CarouselItem

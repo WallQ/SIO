@@ -12,7 +12,7 @@ const InnerWrapper: React.FunctionComponent<InnerWrapperProps> = ({
 	return (
 		<div
 			className={cn(
-				`mx-auto flex h-full max-w-5xl flex-col items-center justify-center gap-24 py-48 ${styles}`,
+				`mx-auto flex h-full max-w-5xl flex-col items-center justify-center gap-12 py-12 md:py-24 lg:gap-24 lg:py-48 ${styles}`,
 			)}>
 			{children}
 		</div>

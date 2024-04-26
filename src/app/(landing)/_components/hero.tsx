@@ -44,14 +44,18 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 							<motion.div variants={FADE_DOWN_ANIMATION_VARIANTS}>
 								<Heading level={1}>
 									<Balancer>
-										Sistemas de Informação Organizacionais
+										Organizational Information Systems
 									</Balancer>
 								</Heading>
 							</motion.div>
 							<motion.div variants={FADE_DOWN_ANIMATION_VARIANTS}>
 								<Paragraph>
-									Lorem ipsum, dolor sit amet consectetur
-									adipisicing elit.
+									Unlock the power of your data with our
+									comprehensive suite of tools. From clear
+									insights to predictive analytics, we&apos;ve
+									got everything you need to thrive. Join us
+									today and take the first step towards
+									data-driven decision-making.
 								</Paragraph>
 							</motion.div>
 						</div>
