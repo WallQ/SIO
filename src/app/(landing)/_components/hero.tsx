@@ -8,6 +8,7 @@ import Balancer from 'react-wrap-balancer';
 
 import { buttonVariants } from '@/components/ui/button';
 
+import Reveal from './reveal';
 import Glow from './ui/glow';
 import InnerWrapper from './ui/inner-wrapper';
 import OuterWrapper from './ui/outer-wrapper';
@@ -38,7 +39,9 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 						className='pointer-events-none absolute inset-0 -z-10'
 						quantity={50}
 					/>
-					<Glow position='bottom' />
+					<Reveal movement={false}>
+						<Glow position='bottom' />
+					</Reveal>
 					<InnerWrapper styles='gap-12'>
 						<div className='flex flex-col items-center justify-between gap-6 text-center'>
 							<motion.div variants={FADE_DOWN_ANIMATION_VARIANTS}>

@@ -15,6 +15,7 @@ import {
 	CarouselItem,
 } from '@/components/ui/carousel';
 
+import Reveal from './reveal';
 import Glow from './ui/glow';
 import InnerWrapper from './ui/inner-wrapper';
 import OuterWrapper from './ui/outer-wrapper';
@@ -67,7 +68,9 @@ const Cta: React.FunctionComponent = (): React.ReactNode => {
 					className='pointer-events-none absolute inset-0 -z-10'
 					quantity={50}
 				/>
-				<Glow position='bottom' />
+				<Reveal movement={false}>
+					<Glow position='bottom' />
+				</Reveal>
 				<InnerWrapper>
 					<div className='flex flex-col items-center justify-between gap-6 text-center'>
 						<Span>Join us</Span>
@@ -81,65 +84,69 @@ const Cta: React.FunctionComponent = (): React.ReactNode => {
 							</Balancer>
 						</Paragraph>
 					</div>
-					<Carousel
-						opts={{
-							loop: true,
-						}}
-						plugins={[
-							Autoplay({
-								delay: 2250,
-							}),
-						]}
-						className='w-full'>
-						<CarouselContent>
-							{testimonials.map((testimonial) => (
-								<CarouselItem
-									key={testimonial.name}
-									className='md:basis-1/2 lg:basis-1/3'>
-									<a
-										href={testimonial.url}
-										target='_blank'
-										rel='noopener noreferrer'
-										aria-label={testimonial.username}>
-										<Card className='h-full bg-primary-foreground transition-all duration-150 ease-linear hover:bg-transparent'>
-											<CardContent className='flex h-full flex-col gap-4 px-8 py-6'>
-												<div className='flex items-center gap-4'>
-													<Avatar className='size-8'>
-														<AvatarImage
-															src={
-																testimonial.image
-															}
-															alt={
-																testimonial.username
-															}
-														/>
-														<AvatarFallback>
-															{getInitials(
-																testimonial.image,
-															)}
-														</AvatarFallback>
-													</Avatar>
-													<div className='flex flex-col'>
-														<span>
-															{testimonial.name}
-														</span>
-														<span className='text-xs text-muted-foreground'>
-															{
-																testimonial.username
-															}
-														</span>
+					<Reveal>
+						<Carousel
+							opts={{
+								loop: true,
+							}}
+							plugins={[
+								Autoplay({
+									delay: 2250,
+								}),
+							]}
+							className='w-full'>
+							<CarouselContent>
+								{testimonials.map((testimonial) => (
+									<CarouselItem
+										key={testimonial.name}
+										className='md:basis-1/2 lg:basis-1/3'>
+										<a
+											href={testimonial.url}
+											target='_blank'
+											rel='noopener noreferrer'
+											aria-label={testimonial.username}>
+											<Card className='h-full bg-primary-foreground transition-all duration-150 ease-linear hover:bg-transparent'>
+												<CardContent className='flex h-full flex-col gap-4 px-8 py-6'>
+													<div className='flex items-center gap-4'>
+														<Avatar className='size-8'>
+															<AvatarImage
+																src={
+																	testimonial.image
+																}
+																alt={
+																	testimonial.username
+																}
+															/>
+															<AvatarFallback>
+																{getInitials(
+																	testimonial.image,
+																)}
+															</AvatarFallback>
+														</Avatar>
+														<div className='flex flex-col'>
+															<span>
+																{
+																	testimonial.name
+																}
+															</span>
+															<span className='text-xs text-muted-foreground'>
+																{
+																	testimonial.username
+																}
+															</span>
+														</div>
 													</div>
-												</div>
-												<Paragraph styles='text-sm text-primary'>
-													{testimonial.review}
-												</Paragraph>
-											</CardContent>
-										</Card>
-									</a>
-								</CarouselItem>
-							))}
-						</CarouselContent>
-					</Carousel>
+													<Paragraph styles='text-sm text-primary'>
+														{testimonial.review}
+													</Paragraph>
+												</CardContent>
+											</Card>
+										</a>
+									</CarouselItem>
+								))}
+							</CarouselContent>
+						</Carousel>
+					</Reveal>
 					<Link
 						href={APP_ROUTES.DASHBOARD.ROOT}
 						className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>

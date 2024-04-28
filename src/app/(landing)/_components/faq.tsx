@@ -7,6 +7,7 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion';
 
+import Reveal from './reveal';
 import InnerWrapper from './ui/inner-wrapper';
 import OuterWrapper from './ui/outer-wrapper';
 import { Heading, Paragraph, Span } from './ui/typography';
@@ -56,20 +57,22 @@ const Faq: React.FunctionComponent = (): React.ReactNode => {
 							</Balancer>
 						</Paragraph>
 					</div>
-					<Accordion type='single' collapsible className='w-full'>
-						{faq.map((item, index) => (
-							<AccordionItem
-								key={`${item.question}-${index}`}
-								value={`item-${index}`}>
-								<AccordionTrigger>
-									{item.question}
-								</AccordionTrigger>
-								<AccordionContent>
-									{item.answer}
-								</AccordionContent>
-							</AccordionItem>
-						))}
-					</Accordion>
+					<Reveal>
+						<Accordion type='single' collapsible className='w-full'>
+							{faq.map((item, index) => (
+								<AccordionItem
+									key={`${item.question}-${index}`}
+									value={`item-${index}`}>
+									<AccordionTrigger>
+										{item.question}
+									</AccordionTrigger>
+									<AccordionContent>
+										{item.answer}
+									</AccordionContent>
+								</AccordionItem>
+							))}
+						</Accordion>
+					</Reveal>
 				</InnerWrapper>
 			</OuterWrapper>
 		</section>
