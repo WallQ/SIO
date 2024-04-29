@@ -16,23 +16,27 @@ import Particles from './ui/particles';
 import { Heading, Paragraph } from './ui/typography';
 
 const Hero: React.FunctionComponent = (): React.ReactNode => {
-	const FADE_DOWN_ANIMATION_VARIANTS = {
-		hidden: { opacity: 0, y: -5 },
+	const container = {
+		hidden: { opacity: 0 },
+		show: {
+			opacity: 1,
+			transition: {
+				staggerChildren: 0.15,
+			},
+		},
+	};
+
+	const item = {
+		hidden: { opacity: 0, y: 50 },
 		show: { opacity: 1, y: 0, transition: { type: 'spring' } },
 	};
+
 	return (
 		<motion.div
+			variants={container}
 			initial='hidden'
 			animate='show'
-			viewport={{ once: true }}
-			variants={{
-				hidden: {},
-				show: {
-					transition: {
-						staggerChildren: 0.15,
-					},
-				},
-			}}>
+			viewport={{ once: true }}>
 			<section id='hero' className='h-screen'>
 				<OuterWrapper>
 					<Particles
@@ -42,16 +46,16 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 					<Reveal movement={false}>
 						<Glow position='bottom' />
 					</Reveal>
-					<InnerWrapper styles='gap-12'>
+					<InnerWrapper styles='lg:gap-12'>
 						<div className='flex flex-col items-center justify-between gap-6 text-center'>
-							<motion.div variants={FADE_DOWN_ANIMATION_VARIANTS}>
+							<motion.div variants={item}>
 								<Heading level={1}>
 									<Balancer>
 										Organizational Information Systems
 									</Balancer>
 								</Heading>
 							</motion.div>
-							<motion.div variants={FADE_DOWN_ANIMATION_VARIANTS}>
+							<motion.div variants={item}>
 								<Paragraph>
 									Unlock the power of your data with our
 									comprehensive suite of tools. From clear
@@ -62,9 +66,7 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 								</Paragraph>
 							</motion.div>
 						</div>
-						<motion.div
-							className='flex gap-4'
-							variants={FADE_DOWN_ANIMATION_VARIANTS}>
+						<motion.div className='flex gap-4' variants={item}>
 							<Link
 								href={APP_ROUTES.DASHBOARD.ROOT}
 								className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>

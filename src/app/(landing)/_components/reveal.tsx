@@ -36,12 +36,11 @@ const Reveal: React.FunctionComponent<RevealProps> = ({
 					visible: {
 						opacity: 1,
 						y: 0,
-						transition: { duration: 0.5 },
+						transition: { duration: 0.75, delay: 0.375 },
 					},
 				}}
 				initial='hidden'
-				animate={mainControls}
-				transition={{ duration: 0.5, delay: 0.25 }}>
+				animate={mainControls}>
 				{children}
 			</motion.div>
 		</div>
