@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 		'sio',
 	],
 	manifest: `${config.url}/site.webmanifest`,
-	metadataBase: new URL(`https://${config.url}`),
+	metadataBase: new URL(config.url),
 	openGraph: {
 		description: config.description,
 		images: [

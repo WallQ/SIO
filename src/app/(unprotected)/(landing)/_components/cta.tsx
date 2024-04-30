@@ -15,12 +15,12 @@ import {
 	CarouselItem,
 } from '@/components/ui/carousel';
 
-import Reveal from './reveal';
+import Reveal from './ui/reveal';
 import Glow from './ui/glow';
-import InnerWrapper from './ui/inner-wrapper';
-import OuterWrapper from './ui/outer-wrapper';
+import InnerWrapper from '../../../../components/inner-wrapper';
+import OuterWrapper from '../../../../components/outer-wrapper';
 import Particles from './ui/particles';
-import { Heading, Paragraph, Span } from './ui/typography';
+import { Heading, Paragraph, Span } from '../../../../components/typography';
 
 const testimonials = [
 	{

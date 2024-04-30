@@ -21,10 +21,7 @@ export const env = createEnv({
 		GITHUB_CLIENT_SECRET: z.string(),
 		GOOGLE_CLIENT_ID: z.string(),
 		GOOGLE_CLIENT_SECRET: z.string(),
-		APP_URL: z.preprocess(
-			(str) => process.env.VERCEL_URL ?? str,
-			process.env.VERCEL ? z.string() : z.string().url(),
-		),
+		MAINTENANCE_MODE: z.string().default('false'),
 	},
 	client: {
 		// NEXT_PUBLIC_CLIENTVAR: z.string(),
@@ -40,7 +37,7 @@ export const env = createEnv({
 		GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
 		GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
 		GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-		APP_URL: process.env.APP_URL,
+		MAINTENANCE_MODE: process.env.MAINTENANCE_MODE,
 	},
 	skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 	emptyStringAsUndefined: true,

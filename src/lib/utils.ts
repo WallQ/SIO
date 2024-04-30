@@ -1,3 +1,4 @@
+import { env } from '@/env';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -63,4 +64,12 @@ export function formatBytes(
 			? accurateSizes[i] ?? 'Bytest'
 			: sizes[i] ?? 'Bytes'
 	}`;
+}
+
+export function getBaseUrl() {
+	if (env.NODE_ENV === 'development') {
+		return 'http://localhost:3000';
+	} else {
+		return `https://${env.NEXTAUTH_URL}`;
+	}
 }

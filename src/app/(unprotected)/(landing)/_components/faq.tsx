@@ -7,10 +7,10 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion';
 
-import Reveal from './reveal';
-import InnerWrapper from './ui/inner-wrapper';
-import OuterWrapper from './ui/outer-wrapper';
-import { Heading, Paragraph, Span } from './ui/typography';
+import Reveal from './ui/reveal';
+import InnerWrapper from '../../../../components/inner-wrapper';
+import OuterWrapper from '../../../../components/outer-wrapper';
+import { Heading, Paragraph, Span } from '../../../../components/typography';
 
 const faq = [
 	{

@@ -1,6 +1,8 @@
 import { type Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { APP_ROUTES } from '@/routes/app';
+import { getServerAuthSession } from '@/server/auth';
 
 import {
 	Card,
@@ -17,7 +19,10 @@ export const metadata: Metadata = {
 	title: 'Sign Up | SIO',
 };
 
-const SignUp = () => {
+const SignUp = async () => {
+	const session = await getServerAuthSession();
+	if (session) redirect(APP_ROUTES.DASHBOARD.ROOT);
+
 	return (
 		<div className='flex flex-1 flex-col items-center justify-center'>
 			<Card className='w-3/4'>

@@ -35,6 +35,7 @@ export const posts = createTable(
 export const users = createTable('user', {
 	id: varchar('id', { length: 255 }).notNull().primaryKey(),
 	name: varchar('name', { length: 255 }),
+	password: varchar('password', { length: 255 }),
 	email: varchar('email', { length: 255 }).notNull(),
 	emailVerified: timestamp('emailVerified', {
 		mode: 'date',
@@ -60,6 +61,7 @@ export const accounts = createTable(
 			length: 255,
 		}).notNull(),
 		refresh_token: text('refresh_token'),
+		refresh_token_expires_in: integer('refresh_token_expires_in'),
 		access_token: text('access_token'),
 		expires_at: integer('expires_at'),
 		token_type: varchar('token_type', { length: 255 }),

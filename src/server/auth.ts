@@ -40,6 +40,43 @@ export const authOptions: NextAuthOptions = {
 	},
 	adapter: DrizzleAdapter(db, createTable) as Adapter,
 	providers: [
+		// CredentialsProvider({
+		// 	id: 'credentials',
+		// 	name: 'Credentials',
+		// 	credentials: {
+		// 		email: {
+		// 			label: 'Email',
+		// 			type: 'email',
+		// 			placeholder: 'sio@estg.ipp.pt',
+		// 		},
+		// 		password: {
+		// 			label: 'Password',
+		// 			type: 'password',
+		// 			placeholder: '********',
+		// 		},
+		// 	},
+		// 	authorize: async (credentials: SignIn) => {
+		// 		const parsedCredentials = SignInSchema.safeParse(credentials);
+
+		// 		if (!parsedCredentials.success) {
+		// 			return null;
+		// 		}
+
+		// 		const { email, password } = parsedCredentials.data;
+
+		// 		const user = await db.query.users.findFirst({
+		// 			where: (user, { eq }) => eq(user.email, email),
+		// 		});
+
+		// 		if (!user) return null;
+
+		// 		const passwordsMatch = await compare(password, user.password!);
+
+		// 		if (!passwordsMatch) return null;
+
+		// 		return user;
+		// 	},
+		// }),
 		DiscordProvider({
 			clientId: env.DISCORD_CLIENT_ID,
 			clientSecret: env.DISCORD_CLIENT_SECRET,
@@ -59,6 +96,7 @@ export const authOptions: NextAuthOptions = {
 		signOut: APP_ROUTES.AUTH.SIGN_OUT,
 	},
 	secret: env.NEXTAUTH_SECRET,
+	useSecureCookies: env.NODE_ENV === 'production',
 	debug: env.NODE_ENV === 'development',
 };
 

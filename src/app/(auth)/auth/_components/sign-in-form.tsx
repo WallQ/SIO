@@ -1,15 +1,14 @@
 'use client';
 
+import { Fragment } from 'react';
+import Link from 'next/link';
 import { APP_ROUTES } from '@/routes/app';
 import { SignInSchema, type SignIn } from '@/validators/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
-import { Fragment } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Icons } from '@/components/icons';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -22,6 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
+import { Icons } from '@/components/icons';
 
 const SignInForm = () => {
 	const form = useForm<SignIn>({
@@ -33,22 +33,35 @@ const SignInForm = () => {
 		},
 	});
 
-	const onSubmit = (data: SignIn) => {
-		// TODO: Sing In User
-		return new Promise<void>((resolve) => {
-			setTimeout(() => {
-				toast({
-					title: 'You submitted the following values:',
-					description: (
-						<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-							<code className='text-white'>
-								{JSON.stringify(data, null, 2)}
-							</code>
-						</pre>
-					),
-				});
-				resolve();
-			}, 5000);
+	const onSubmit = async ({ email, password }: SignIn) => {
+		const response = await signIn('credentials', {
+			email,
+			password,
+			redirect: true,
+		});
+
+		if (!response?.ok) {
+			form.setError('email', {
+				type: 'custom',
+				message: 'Invalid credentials',
+			});
+			form.setError('password', {
+				type: 'custom',
+				message: 'Invalid credentials',
+			});
+			form.setError('root', {
+				type: 'custom',
+				message: 'Invalid credentials',
+			});
+		}
+
+		toast({
+			title: 'You submitted the following values:',
+			description: (
+				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
+					<code className='text-white'>Testing</code>
+				</pre>
+			),
 		});
 	};
 

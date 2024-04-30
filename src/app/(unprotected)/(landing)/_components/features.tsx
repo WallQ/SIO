@@ -2,10 +2,10 @@ import Image from 'next/image';
 import { Bot, File, LayoutDashboard, LineChart } from 'lucide-react';
 import Balancer from 'react-wrap-balancer';
 
-import Reveal from './reveal';
-import InnerWrapper from './ui/inner-wrapper';
-import OuterWrapper from './ui/outer-wrapper';
-import { Heading, Paragraph, Span } from './ui/typography';
+import InnerWrapper from '../../../../components/inner-wrapper';
+import OuterWrapper from '../../../../components/outer-wrapper';
+import Reveal from './ui/reveal';
+import { Heading, Paragraph, Span } from '../../../../components/typography';
 
 const features = [
 	{
