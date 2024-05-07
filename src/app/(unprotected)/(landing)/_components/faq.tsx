@@ -6,11 +6,11 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '@/components/ui/accordion';
+import InnerWrapper from '@/components/inner-wrapper';
+import OuterWrapper from '@/components/outer-wrapper';
+import { Heading, Paragraph, Span } from '@/components/typography';
 
 import Reveal from './ui/reveal';
-import InnerWrapper from '../../../../components/inner-wrapper';
-import OuterWrapper from '../../../../components/outer-wrapper';
-import { Heading, Paragraph, Span } from '../../../../components/typography';
 
 const faq = [
 	{

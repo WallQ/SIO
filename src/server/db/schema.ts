@@ -2,6 +2,7 @@ import { relations, sql } from 'drizzle-orm';
 import {
 	index,
 	integer,
+	numeric,
 	pgTableCreator,
 	primaryKey,
 	serial,
@@ -12,25 +13,6 @@ import {
 import { type AdapterAccount } from 'next-auth/adapters';
 
 export const createTable = pgTableCreator((name) => `sio_${name}`);
-
-export const posts = createTable(
-	'post',
-	{
-		id: serial('id').primaryKey(),
-		name: varchar('name', { length: 256 }),
-		createdById: varchar('createdById', { length: 255 })
-			.notNull()
-			.references(() => users.id),
-		createdAt: timestamp('created_at')
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp('updatedAt'),
-	},
-	(example) => ({
-		createdByIdIdx: index('createdById_idx').on(example.createdById),
-		nameIndex: index('name_idx').on(example.name),
-	}),
-);
 
 export const users = createTable('user', {
 	id: varchar('id', { length: 255 }).notNull().primaryKey(),
@@ -110,5 +92,95 @@ export const verificationTokens = createTable(
 	},
 	(vt) => ({
 		compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
+	}),
+);
+
+export const companyDimension = createTable('company_dimension', {
+	id: serial('id').notNull().primaryKey(),
+	name: varchar('name', { length: 64 }).notNull(),
+	street: varchar('street', { length: 64 }).notNull(),
+	city: varchar('city', { length: 64 }).notNull(),
+	zip: varchar('zip', { length: 64 }).notNull(),
+	country: varchar('country', { length: 64 }).notNull(),
+});
+
+export const productDimension = createTable('product_dimension', {
+	id: serial('id').notNull().primaryKey(),
+	name: varchar('name', { length: 64 }).notNull(),
+	category: varchar('category', { length: 64 }).notNull(),
+});
+
+export const customerDimension = createTable('customer_dimension', {
+	id: serial('id').notNull().primaryKey(),
+	name: varchar('name', { length: 64 }).notNull(),
+	email: varchar('email', { length: 64 }).notNull(),
+	phone: varchar('phone', { length: 64 }).notNull(),
+	street: varchar('street', { length: 64 }).notNull(),
+	city: varchar('city', { length: 64 }).notNull(),
+	zip: varchar('zip', { length: 64 }).notNull(),
+	country: varchar('country', { length: 64 }).notNull(),
+});
+
+export const geoDimension = createTable('geo_dimension', {
+	id: serial('id').notNull().primaryKey(),
+	city: varchar('city', { length: 64 }).notNull(),
+	country: varchar('country', { length: 64 }).notNull(),
+});
+
+export const timeDimension = createTable('time_dimension', {
+	id: serial('id').notNull().primaryKey(),
+	date: timestamp('date').notNull(),
+	year: integer('year').notNull(),
+	month: integer('month').notNull(),
+	day: integer('day').notNull(),
+	week: integer('week').notNull(),
+	quarter: integer('quarter').notNull(),
+});
+
+export const salesFact = createTable(
+	'sales_fact',
+	{
+		id: serial('id').notNull().primaryKey(),
+		tax_payable: numeric('tax_payable').notNull(),
+		net_total: numeric('net_total').notNull(),
+		gross_total: numeric('gross_total').notNull(),
+		company_id: integer('company_id')
+			.notNull()
+			.references(() => companyDimension.id, {
+				onDelete: 'no action',
+				onUpdate: 'no action',
+			})
+			.notNull(),
+		product_id: integer('product_id')
+			.references(() => productDimension.id, {
+				onDelete: 'no action',
+				onUpdate: 'no action',
+			})
+			.notNull(),
+		customer_id: integer('customer_id')
+			.references(() => customerDimension.id, {
+				onDelete: 'no action',
+				onUpdate: 'no action',
+			})
+			.notNull(),
+		geo_id: integer('geo_id')
+			.references(() => geoDimension.id, {
+				onDelete: 'no action',
+				onUpdate: 'no action',
+			})
+			.notNull(),
+		time_id: integer('time_id')
+			.references(() => timeDimension.id, {
+				onDelete: 'no action',
+				onUpdate: 'no action',
+			})
+			.notNull(),
+	},
+	(salesFact) => ({
+		company_idIdx: index('company_id_idx').on(salesFact.company_id),
+		product_idIdx: index('product_id_idx').on(salesFact.product_id),
+		customer_idIdx: index('customer_id_idx').on(salesFact.customer_id),
+		geo_idIdx: index('geo_id_idx').on(salesFact.geo_id),
+		time_idIdx: index('time_id_idx').on(salesFact.time_id),
 	}),
 );

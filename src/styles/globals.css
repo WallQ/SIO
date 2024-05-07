@@ -54,7 +54,7 @@
 		@apply border-border;
 	}
 	html {
-		@apply scroll-smooth;
+		@apply dark scroll-smooth;
 	}
 	body {
 		@apply bg-background font-sans text-foreground antialiased;

@@ -9,7 +9,7 @@ import Navbar from './_components/navbar';
 import Pricing from './_components/pricing';
 import ScrollToTop from './_components/ui/scroll-to-top';
 
-export default async function Homepage() {
+export default function Homepage() {
 	return (
 		<Fragment>
 			<Navbar />

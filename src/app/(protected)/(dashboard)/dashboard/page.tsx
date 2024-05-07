@@ -55,11 +55,37 @@ export default function Dashboard() {
 					: 'lg:grid-cols-2 xl:grid-cols-2',
 			)}>
 			<div className='grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2'>
-				<div className='grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4'>
-					<StatCard time='day' amount={100} diffrence={12} />
-					<StatCard time='week' amount={100} diffrence={12} />
-					<StatCard time='month' amount={100} diffrence={12} />
-					<StatCard time='year' amount={100} diffrence={12} />
+				<div className='grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
+					<StatCard
+						label='Yearly Testing 1'
+						amount={1000000.0}
+						diffrence={5.5}
+						time='year'
+					/>
+					<StatCard
+						label='Monthly Testing 2'
+						amount={100000.0}
+						diffrence={-5.5}
+						time='month'
+					/>
+					<StatCard
+						label='Weekly Testing 3'
+						amount={1000.0}
+						diffrence={5.5}
+						time='week'
+					/>
+					<StatCard
+						label='Daily Testing 4'
+						amount={100.0}
+						diffrence={-5.5}
+						time='day'
+					/>
+					<StatCard
+						label='Testing 5'
+						amount={0}
+						diffrence={0}
+						time='day'
+					/>
 				</div>
 				<Tabs defaultValue='week'>
 					<div className='flex items-center'>

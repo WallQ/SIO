@@ -1,8 +1,7 @@
 import { Globe } from 'lucide-react';
 
 import { Icons } from '@/components/icons';
-
-import OuterWrapper from '../../../../components/outer-wrapper';
+import OuterWrapper from '@/components/outer-wrapper';
 
 const Footer: React.FunctionComponent = (): React.ReactNode => {
 	return (

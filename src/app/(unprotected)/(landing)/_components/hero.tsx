@@ -7,13 +7,13 @@ import { ArrowRight, ExternalLink } from 'lucide-react';
 import Balancer from 'react-wrap-balancer';
 
 import { buttonVariants } from '@/components/ui/button';
+import InnerWrapper from '@/components/inner-wrapper';
+import OuterWrapper from '@/components/outer-wrapper';
+import { Heading, Paragraph } from '@/components/typography';
 
-import Reveal from './ui/reveal';
 import Glow from './ui/glow';
-import InnerWrapper from '../../../../components/inner-wrapper';
-import OuterWrapper from '../../../../components/outer-wrapper';
 import Particles from './ui/particles';
-import { Heading, Paragraph } from '../../../../components/typography';
+import Reveal from './ui/reveal';
 
 const Hero: React.FunctionComponent = (): React.ReactNode => {
 	const container = {

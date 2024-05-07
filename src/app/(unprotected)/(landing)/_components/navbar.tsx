@@ -5,8 +5,7 @@ import { LogIn, LogOut } from 'lucide-react';
 
 import { buttonVariants } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
-
-import OuterWrapper from '../../../../components/outer-wrapper';
+import OuterWrapper from '@/components/outer-wrapper';
 
 const Navbar: React.FunctionComponent = async () => {
 	const session = await getServerAuthSession();

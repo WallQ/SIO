@@ -30,10 +30,15 @@ export const convertStringToXML = (base64: string) => {
 	return decodedData;
 };
 
-export const formatCurrency = (value: number, showCents = true) => {
+export const formatCurrency = (
+	value: number,
+	compact = false,
+	showCents = true,
+) => {
 	return new Intl.NumberFormat('pt-PT', {
 		style: 'currency',
 		currency: 'EUR',
+		notation: compact ? 'compact' : 'standard',
 		minimumFractionDigits: showCents ? 2 : 0,
 		maximumFractionDigits: showCents ? 2 : 0,
 	}).format(value);

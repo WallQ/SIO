@@ -1,11 +1,13 @@
 import Image from 'next/image';
+import DefaultFeaturesImage from '@/assets/images/dashboard-screenshot.png';
 import { Bot, File, LayoutDashboard, LineChart } from 'lucide-react';
 import Balancer from 'react-wrap-balancer';
 
-import InnerWrapper from '../../../../components/inner-wrapper';
-import OuterWrapper from '../../../../components/outer-wrapper';
+import InnerWrapper from '@/components/inner-wrapper';
+import OuterWrapper from '@/components/outer-wrapper';
+import { Heading, Paragraph, Span } from '@/components/typography';
+
 import Reveal from './ui/reveal';
-import { Heading, Paragraph, Span } from '../../../../components/typography';
 
 const features = [
 	{
@@ -69,7 +71,7 @@ const Features: React.FunctionComponent = (): React.ReactNode => {
 					<div className='lg:l-32 lg:flex'>
 						<div className='max-w-none flex-none'>
 							<Image
-								src='/assets/images/dashboard-screenshot.png'
+								src={DefaultFeaturesImage}
 								alt='App screenshot'
 								width={1440}
 								height={900}

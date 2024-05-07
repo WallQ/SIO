@@ -4,14 +4,14 @@ import { ArrowRight, Check } from 'lucide-react';
 import Balancer from 'react-wrap-balancer';
 
 import { cn, formatCurrency } from '@/lib/utils';
+import InnerWrapper from '@/components/inner-wrapper';
+import OuterWrapper from '@/components/outer-wrapper';
+import { Heading, Paragraph, Span } from '@/components/typography';
 
 import Glow from './ui/glow';
-import InnerWrapper from '../../../../components/inner-wrapper';
-import OuterWrapper from '../../../../components/outer-wrapper';
 import Particles from './ui/particles';
 import Reveal from './ui/reveal';
 import { Spotlight, SpotlightCard } from './ui/spotlight';
-import { Heading, Paragraph, Span } from '../../../../components/typography';
 
 const plans = [
 	{

@@ -14,13 +14,13 @@ import {
 	CarouselContent,
 	CarouselItem,
 } from '@/components/ui/carousel';
+import InnerWrapper from '@/components/inner-wrapper';
+import OuterWrapper from '@/components/outer-wrapper';
+import { Heading, Paragraph, Span } from '@/components/typography';
 
-import Reveal from './ui/reveal';
 import Glow from './ui/glow';
-import InnerWrapper from '../../../../components/inner-wrapper';
-import OuterWrapper from '../../../../components/outer-wrapper';
 import Particles from './ui/particles';
-import { Heading, Paragraph, Span } from '../../../../components/typography';
+import Reveal from './ui/reveal';
 
 const testimonials = [
 	{
@@ -50,6 +50,13 @@ const testimonials = [
 		name: 'Rafael Ferraz',
 		review: 'That hairdryer was too expensive.',
 		url: 'https://github.com/rafaelferraz2002',
+	},
+	{
+		image: 'https://github.com/ruicosta1933.png',
+		username: '@ruicosta1933',
+		name: 'Rui Brandão',
+		review: 'Where am I?',
+		url: 'https://github.com/ruicosta1933',
 	},
 	{
 		image: 'https://github.com/wallq.png',
