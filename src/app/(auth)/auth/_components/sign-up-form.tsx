@@ -23,7 +23,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { Icons } from '@/components/icons';
 
-const SignUpForm = () => {
+const SignUpForm: React.FunctionComponent = (): React.ReactNode => {
 	const form = useForm<SignUp>({
 		resolver: zodResolver(SignUpSchema),
 		defaultValues: {

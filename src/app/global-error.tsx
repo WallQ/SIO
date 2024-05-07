@@ -7,15 +7,13 @@ import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button, buttonVariants } from '@/components/ui/button';
 
-type GlobalErrorProps = {
-	error: Error & { digest?: string };
-	reset: () => void;
-};
-
-const GlobalError: React.FunctionComponent<GlobalErrorProps> = ({
+export default function GlobalError({
 	error,
 	reset,
-}): React.ReactNode => {
+}: {
+	error: Error & { digest?: string };
+	reset: () => void;
+}) {
 	return (
 		<div className='mx-auto flex h-screen w-full max-w-7xl flex-col items-center justify-center px-4 sm:px-6 lg:px-8'>
 			<Alert variant='destructive'>
@@ -43,6 +41,4 @@ const GlobalError: React.FunctionComponent<GlobalErrorProps> = ({
 			</Alert>
 		</div>
 	);
-};
-
-export default GlobalError;
+}

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 	title: 'Forgot Password | SIO',
 };
 
-const ForgotPassword = async () => {
+export default async function ForgotPassword() {
 	const session = await getServerAuthSession();
 	if (session) redirect(APP_ROUTES.DASHBOARD.ROOT);
 
@@ -51,6 +51,4 @@ const ForgotPassword = async () => {
 			</Card>
 		</div>
 	);
-};
-
-export default ForgotPassword;
+}

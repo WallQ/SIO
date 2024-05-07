@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { APP_ROUTES } from '@/routes/app';
 import { signOut } from 'next-auth/react';
 
-const SignOut = () => {
+export default function SignOut() {
 	useEffect(() => {
 		const singOutUser = async () => {
 			await signOut({
@@ -23,6 +23,4 @@ const SignOut = () => {
 	}, []);
 
 	return null;
-};
-
-export default SignOut;
+}

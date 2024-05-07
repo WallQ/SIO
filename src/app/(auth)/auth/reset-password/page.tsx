@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 	title: 'Reset Password | SIO',
 };
 
-const ResetPassword = async () => {
+export default async function ResetPassword() {
 	const session = await getServerAuthSession();
 	if (session) redirect(APP_ROUTES.DASHBOARD.ROOT);
 
@@ -51,6 +51,4 @@ const ResetPassword = async () => {
 			</Card>
 		</div>
 	);
-};
-
-export default ResetPassword;
+}

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 	title: 'Sign In | SIO',
 };
 
-const SignIn = async () => {
+export default async function SignIn() {
 	const session = await getServerAuthSession();
 	if (session) redirect(APP_ROUTES.DASHBOARD.ROOT);
 
@@ -51,6 +51,4 @@ const SignIn = async () => {
 			</Card>
 		</div>
 	);
-};
-
-export default SignIn;
+}
