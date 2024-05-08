@@ -29,15 +29,6 @@ declare module 'next-auth' {
 }
 
 export const authOptions: NextAuthOptions = {
-	callbacks: {
-		session: ({ session, user }) => ({
-			...session,
-			user: {
-				...session.user,
-				id: user.id,
-			},
-		}),
-	},
 	adapter: DrizzleAdapter(db, createTable) as Adapter,
 	providers: [
 		// CredentialsProvider({
@@ -90,6 +81,18 @@ export const authOptions: NextAuthOptions = {
 			clientSecret: env.GOOGLE_CLIENT_SECRET,
 		}),
 	],
+	callbacks: {
+		session: ({ session, user }) => {
+			if (!user) throw 'unreachable with session strategy';
+			return {
+				...session,
+				user: {
+					...session.user,
+					id: user.id,
+				},
+			};
+		},
+	},
 	pages: {
 		signIn: APP_ROUTES.AUTH.SIGN_IN,
 		newUser: APP_ROUTES.AUTH.SIGN_UP,

@@ -12,17 +12,17 @@ const Providers: React.FunctionComponent<ProvidersProps> = ({
 	children,
 }): React.ReactNode => {
 	return (
-		<TRPCReactProvider>
-			<SessionProvider>
-				<ThemeProvider
-					attribute='class'
-					defaultTheme='dark'
-					disableTransitionOnChange>
+		<ThemeProvider
+			attribute='class'
+			defaultTheme='dark'
+			disableTransitionOnChange>
+			<TRPCReactProvider>
+				<SessionProvider>
 					{children}
 					<Toaster />
-				</ThemeProvider>
-			</SessionProvider>
-		</TRPCReactProvider>
+				</SessionProvider>
+			</TRPCReactProvider>
+		</ThemeProvider>
 	);
 };
 

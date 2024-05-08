@@ -105,6 +105,7 @@ const Pricing: React.FunctionComponent = (): React.ReactNode => {
 																{formatCurrency(
 																	plan.price,
 																	false,
+																	false,
 																)}
 															</span>
 															<span className='text-xl'>
