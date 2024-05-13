@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { APP_ROUTES } from '@/routes/app';
 import { motion } from 'framer-motion';
 import { ArrowRight, ExternalLink } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Balancer from 'react-wrap-balancer';
 
 import { buttonVariants } from '@/components/ui/button';
@@ -16,6 +17,8 @@ import Particles from './ui/particles';
 import Reveal from './ui/reveal';
 
 const Hero: React.FunctionComponent = (): React.ReactNode => {
+	const { data: session } = useSession();
+
 	const container = {
 		hidden: { opacity: 0 },
 		show: {
@@ -67,12 +70,21 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 							</motion.div>
 						</div>
 						<motion.div className='flex gap-4' variants={item}>
-							<Link
-								href={APP_ROUTES.DASHBOARD.ROOT}
-								className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
-								Get Started
-								<ArrowRight className='ml-2 size-4' />
-							</Link>
+							{session ? (
+								<Link
+									href={APP_ROUTES.DASHBOARD.ROOT}
+									className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
+									Go To Dashboard
+									<ArrowRight className='ml-2 size-4' />
+								</Link>
+							) : (
+								<Link
+									href={APP_ROUTES.DASHBOARD.ROOT}
+									className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
+									Get Started
+									<ArrowRight className='ml-2 size-4' />
+								</Link>
+							)}
 							<a
 								href='https://github.com/WallQ/SIO'
 								target='_blank'
@@ -82,7 +94,7 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 									variant: 'outline',
 								})}>
 								Repository
-								<ExternalLink className='ml-2 h-4 w-4' />
+								<ExternalLink className='ml-2 size-4' />
 							</a>
 						</motion.div>
 					</InnerWrapper>

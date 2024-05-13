@@ -4,10 +4,10 @@ import { DonutChart, List, ListItem } from '@tremor/react';
 
 import { cn, formatCurrency } from '@/lib/utils';
 
-const colors = ['cyan', 'blue', 'indigo', 'purple', 'fuchsia', 'rose'];
+const colors = ['cyan', 'blue', 'indigo', 'purple', 'fuchsia'];
 
 type CustomerStatProps = {
-	data: { name: string; revenue: number }[];
+	data: { name: string; amount: number }[];
 };
 
 const CustomerStat: React.FunctionComponent<CustomerStatProps> = ({
@@ -19,16 +19,9 @@ const CustomerStat: React.FunctionComponent<CustomerStatProps> = ({
 				<DonutChart
 					data={data}
 					index='name'
-					category='revenue'
+					category='amount'
 					variant='donut'
-					colors={[
-						'cyan',
-						'blue',
-						'indigo',
-						'purple',
-						'fuchsia',
-						'rose',
-					]}
+					colors={colors}
 					valueFormatter={(v: number) =>
 						formatCurrency(v, false, false)
 					}
@@ -58,7 +51,7 @@ const CustomerStat: React.FunctionComponent<CustomerStatProps> = ({
 								</div>
 								<span className='font-medium text-primary'>
 									{formatCurrency(
-										customer.revenue,
+										customer.amount,
 										false,
 										false,
 									)}

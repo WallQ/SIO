@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { APP_ROUTES } from '@/routes/app';
 import Autoplay from 'embla-carousel-autoplay';
 import { ArrowRight } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Balancer from 'react-wrap-balancer';
 
 import { getInitials } from '@/lib/utils';
@@ -68,6 +69,8 @@ const testimonials = [
 ];
 
 const Cta: React.FunctionComponent = (): React.ReactNode => {
+	const { data: session } = useSession();
+
 	return (
 		<section id='cta' className='border-t'>
 			<OuterWrapper>
@@ -154,12 +157,21 @@ const Cta: React.FunctionComponent = (): React.ReactNode => {
 							</CarouselContent>
 						</Carousel>
 					</Reveal>
-					<Link
-						href={APP_ROUTES.DASHBOARD.ROOT}
-						className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
-						Get Started
-						<ArrowRight className='ml-2 size-4' />
-					</Link>
+					{session ? (
+						<Link
+							href={APP_ROUTES.DASHBOARD.ROOT}
+							className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
+							Go To Dashboard
+							<ArrowRight className='ml-2 size-4' />
+						</Link>
+					) : (
+						<Link
+							href={APP_ROUTES.DASHBOARD.ROOT}
+							className='inline-flex h-10 animate-shine items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-primary via-primary/75 to-primary bg-[length:400%_100%] px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
+							Get Started
+							<ArrowRight className='ml-2 size-4' />
+						</Link>
+					)}
 				</InnerWrapper>
 			</OuterWrapper>
 		</section>

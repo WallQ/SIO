@@ -37,16 +37,12 @@ type Company = {
 
 const companys = [
 	{
-		value: 'apple',
-		label: 'Apple',
+		value: 'eletrotech',
+		label: 'EletroTech',
 	},
 	{
-		value: 'meta',
-		label: 'Meta',
-	},
-	{
-		value: 'x',
-		label: 'X',
+		value: 'krakentech',
+		label: 'KrakenTech',
 	},
 ] as Company[];
 

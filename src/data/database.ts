@@ -260,9 +260,9 @@ export type timesType = typeof times;
 
 export type Sales = {
 	id: number;
-	tax_payable: string;
-	net_total: string;
-	gross_total: string;
+	tax_payable: number;
+	net_total: number;
+	gross_total: number;
 	company_id: number;
 	product_id: number;
 	customer_id: number;
@@ -273,9 +273,9 @@ export type Sales = {
 export const sales = [
 	{
 		id: 1,
-		tax_payable: '296.0',
-		net_total: '1203.0',
-		gross_total: '1499.0',
+		tax_payable: 296.0,
+		net_total: 1203.0,
+		gross_total: 1499.0,
 		company_id: 1,
 		product_id: 1,
 		customer_id: 1,
@@ -284,9 +284,9 @@ export const sales = [
 	},
 	{
 		id: 2,
-		tax_payable: '249.0',
-		net_total: '1000.0',
-		gross_total: '1249.0',
+		tax_payable: 249.0,
+		net_total: 1000.0,
+		gross_total: 1249.0,
 		company_id: 1,
 		product_id: 2,
 		customer_id: 2,
@@ -295,9 +295,9 @@ export const sales = [
 	},
 	{
 		id: 3,
-		tax_payable: '228.0',
-		net_total: '911.0',
-		gross_total: '1139.0',
+		tax_payable: 228.0,
+		net_total: 911.0,
+		gross_total: 1139.0,
 		company_id: 1,
 		product_id: 3,
 		customer_id: 3,
@@ -306,9 +306,9 @@ export const sales = [
 	},
 	{
 		id: 4,
-		tax_payable: '200.0',
-		net_total: '789.0',
-		gross_total: '989.0',
+		tax_payable: 200.0,
+		net_total: 789.0,
+		gross_total: 989.0,
 		company_id: 1,
 		product_id: 4,
 		customer_id: 4,
@@ -317,9 +317,9 @@ export const sales = [
 	},
 	{
 		id: 5,
-		tax_payable: '771.0',
-		net_total: '3328.0',
-		gross_total: '4099.0',
+		tax_payable: 771.0,
+		net_total: 3328.0,
+		gross_total: 4099.0,
 		company_id: 2,
 		product_id: 5,
 		customer_id: 5,
@@ -328,9 +328,9 @@ export const sales = [
 	},
 	{
 		id: 6,
-		tax_payable: '584.0',
-		net_total: '2515.0',
-		gross_total: '3099.0',
+		tax_payable: 584.0,
+		net_total: 2515.0,
+		gross_total: 3099.0,
 		company_id: 2,
 		product_id: 6,
 		customer_id: 6,
@@ -339,9 +339,9 @@ export const sales = [
 	},
 	{
 		id: 7,
-		tax_payable: '474.0',
-		net_total: '2035.0',
-		gross_total: '2509.0',
+		tax_payable: 474.0,
+		net_total: 2035.0,
+		gross_total: 2509.0,
 		company_id: 2,
 		product_id: 7,
 		customer_id: 1,
