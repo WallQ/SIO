@@ -4,7 +4,7 @@
 
 To get started with SIO application on your local machine, follow these steps:
 
-<sup>Taking in consideration Node.js v20+, PnPM and Docker was previously installed.</sup>
+<sup>Taking in consideration Node.js v20+, PnPM and Docker is already installed.</sup>
 
 1. Clone the repository:
 
