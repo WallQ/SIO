@@ -15,7 +15,6 @@ git clone <repository-url>
 2. Install the required dependencies:
 
 ```bash
-cd sio
 pnpm install
 ```
 
