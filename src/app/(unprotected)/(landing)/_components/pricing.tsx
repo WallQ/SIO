@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { APP_ROUTES } from '@/routes/app';
 import { ArrowRight, Check } from 'lucide-react';
 import Balancer from 'react-wrap-balancer';
 
@@ -149,10 +148,7 @@ const Pricing: React.FunctionComponent = (): React.ReactNode => {
 													</ul>
 												</div>
 												<Link
-													href={
-														APP_ROUTES.DASHBOARD
-															.BILLING
-													}
+													href={'#'}
 													className={cn(
 														'inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
 														{

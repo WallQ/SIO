@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useCompanyStore } from '@/stores/companies';
+import { api } from '@/trpc/react';
 import { Check, ChevronsUpDown, CirclePlus } from 'lucide-react';
+import { useState } from 'react';
 
-import { cn, getInitials } from '@/lib/utils';
+import FileUploader from '@/components/file-uploader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,27 +31,33 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
-
-type Company = {
-	value: string;
-	label: string;
-};
-
-const companys = [
-	{
-		value: 'eletrotech',
-		label: 'EletroTech',
-	},
-	{
-		value: 'krakentech',
-		label: 'KrakenTech',
-	},
-] as Company[];
+import { cn, convertFileToBase64, getInitials } from '@/lib/utils';
 
 const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 	const [openModal, setOpenModal] = useState(false);
 	const [openPopover, setOpenPopover] = useState(false);
-	const [selectedCompany, setSelectedCompany] = useState('');
+	const [files, setFiles] = useState<File[]>([]);
+
+	const selectedCompany = useCompanyStore((state) => state.selectedCompany);
+	const setSelectedCompany = useCompanyStore(
+		(state) => state.setSelectedCompany,
+	);
+
+	const { data: companies } = api.companies.getCompanies.useQuery();
+
+	const uploadFile = api.post.file.useMutation({
+		onSuccess: () => {
+			console.log('File uploaded');
+		},
+		onError: (error) => {
+			console.log('Error uploading file', error);
+		},
+	});
+
+	const handleUpload = async (files: File[]) => {
+		const base64 = (await convertFileToBase64(files[0]!)) as string;
+		uploadFile.mutate({ file: base64 });
+	};
 
 	return (
 		<Dialog open={openModal} onOpenChange={setOpenModal}>
@@ -63,17 +71,16 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 						{selectedCompany ? (
 							<Avatar className='mr-2 h-5 w-5'>
 								<AvatarImage
-									src={`https://source.boringavatars.com/beam/128/${selectedCompany}?colors=fafafa,f4f4f5,e4e4e7,d4d4d8,a1a1aa,71717a,52525b,3f3f46,27272a,18181b,09090b`}
+									src={`https://source.boringavatars.com/beam/128/${selectedCompany.name}?colors=fafafa,f4f4f5,e4e4e7,d4d4d8,a1a1aa,71717a,52525b,3f3f46,27272a,18181b,09090b`}
 									alt='Company logo'
 								/>
 								<AvatarFallback>
-									{getInitials(selectedCompany)}
+									{getInitials(selectedCompany.name)}
 								</AvatarFallback>
 							</Avatar>
 						) : null}
 						{selectedCompany
-							? companys.find((c) => c.value === selectedCompany)
-									?.label
+							? selectedCompany.name
 							: 'Select company...'}
 						<ChevronsUpDown className='ml-auto size-4 shrink-0 opacity-50' />
 					</Button>
@@ -83,36 +90,30 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 						<CommandInput placeholder='Search company...' />
 						<CommandList>
 							<CommandEmpty>No company found.</CommandEmpty>
-							{companys.length > 0 ? (
+							{companies && companies.length > 0 ? (
 								<CommandGroup>
-									{companys.map((company) => (
+									{companies.map((company) => (
 										<CommandItem
-											key={company.value}
-											value={company.value}
-											onSelect={(currentValue) => {
-												setSelectedCompany(
-													currentValue ===
-														selectedCompany
-														? ''
-														: currentValue,
-												);
+											key={company.id}
+											value={`${company.id}`}
+											onSelect={() => {
+												setSelectedCompany(company);
 												setOpenPopover(false);
 											}}>
 											<Avatar className='mr-2 h-5 w-5'>
 												<AvatarImage
-													src={`https://source.boringavatars.com/beam/128/${company.value}?colors=fafafa,f4f4f5,e4e4e7,d4d4d8,a1a1aa,71717a,52525b,3f3f46,27272a,18181b,09090b`}
-													alt={company.label}
+													src={`https://source.boringavatars.com/beam/128/${company.name}?colors=fafafa,f4f4f5,e4e4e7,d4d4d8,a1a1aa,71717a,52525b,3f3f46,27272a,18181b,09090b`}
+													alt={company.name}
 												/>
 												<AvatarFallback>
-													{getInitials(company.label)}
+													{getInitials(company.name)}
 												</AvatarFallback>
 											</Avatar>
-											{company.label}
+											{company.name}
 											<Check
 												className={cn(
 													'ml-auto size-4',
-													selectedCompany ===
-														company.value
+													selectedCompany === company
 														? 'opacity-100'
 														: 'opacity-0',
 												)}
@@ -142,12 +143,17 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 			</Popover>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Create team</DialogTitle>
+					<DialogTitle>Create Company</DialogTitle>
 					<DialogDescription>
-						Add a new team to manage products and customers.
+						Add the data of the company you want to create.
 					</DialogDescription>
 				</DialogHeader>
-				<div>{/* Upload file component */}</div>
+				<FileUploader
+					maxFiles={1}
+					maxSize={1 * 1024 * 1024}
+					onValueChange={setFiles}
+					onUpload={handleUpload}
+				/>
 				<DialogFooter>
 					<Button
 						variant='outline'

@@ -17,7 +17,7 @@ export default function GlobalError({
 	return (
 		<div className='mx-auto flex h-screen w-full max-w-7xl flex-col items-center justify-center px-4 sm:px-6 lg:px-8'>
 			<Alert variant='destructive'>
-				<AlertCircle className='h-4 w-4' />
+				<AlertCircle className='size-4' />
 				<AlertTitle>Error!</AlertTitle>
 				<AlertDescription>
 					{error.message ?? 'An unexpected error has occurred.'}
@@ -28,7 +28,7 @@ export default function GlobalError({
 						className={`w-full ${buttonVariants({
 							variant: 'outline',
 						})}`}>
-						<ArrowLeft className='mr-2 h-4 w-4' />
+						<ArrowLeft className='mr-2 size-4' />
 						Go back
 					</Link>
 					<Button

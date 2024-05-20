@@ -44,6 +44,19 @@ export const formatCurrency = (
 	}).format(value);
 };
 
+export const formatNumber = (
+	value: number,
+	compact = false,
+	showDecimals = true,
+) => {
+	return new Intl.NumberFormat('pt-PT', {
+		style: 'decimal',
+		notation: compact ? 'compact' : 'standard',
+		minimumFractionDigits: showDecimals ? 2 : 0,
+		maximumFractionDigits: showDecimals ? 2 : 0,
+	}).format(value);
+};
+
 export const getInitials = (name: string): string => {
 	return name
 		.split(' ')

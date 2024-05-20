@@ -7,7 +7,6 @@ export const APP_ROUTES = {
 		CUSTOMERS: '/dashboard/customers',
 		SUPPLIERS: '/dashboard/suppliers',
 		ANALYTICS: '/dashboard/analytics',
-		BILLING: '/dashboard/billing',
 		SETTINGS: '/dashboard/settings',
 		PROFILE: '/dashboard/profile',
 	},
