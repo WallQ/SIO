@@ -15,11 +15,11 @@ import { type AdapterAccount } from 'next-auth/adapters';
 export const createTable = pgTableCreator((name) => `sio_${name}`);
 
 export const companyDimension = createTable('company_dimension', {
-	id: serial('id').notNull().primaryKey(),
+	id: integer('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
 	street: varchar('street', { length: 64 }).notNull(),
 	city: varchar('city', { length: 64 }).notNull(),
-	zip: varchar('zip', { length: 64 }).notNull(),
+	postal_code: varchar('postal_code', { length: 64 }).notNull(),
 	country: varchar('country', { length: 64 }).notNull(),
 });
 
@@ -31,7 +31,7 @@ export const companyDimensionRelations = relations(
 );
 
 export const productDimension = createTable('product_dimension', {
-	id: serial('id').notNull().primaryKey(),
+	id: integer('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
 	category: varchar('category', { length: 64 }).notNull(),
 });
@@ -44,13 +44,13 @@ export const productDimensionRelations = relations(
 );
 
 export const customerDimension = createTable('customer_dimension', {
-	id: serial('id').notNull().primaryKey(),
+	id: integer('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
 	email: varchar('email', { length: 64 }).notNull(),
-	phone: varchar('phone', { length: 64 }).notNull(),
+	telephone: varchar('telephone', { length: 64 }).notNull(),
 	street: varchar('street', { length: 64 }).notNull(),
 	city: varchar('city', { length: 64 }).notNull(),
-	zip: varchar('zip', { length: 64 }).notNull(),
+	postal_code: varchar('postal_code', { length: 64 }).notNull(),
 	country: varchar('country', { length: 64 }).notNull(),
 });
 
@@ -95,32 +95,32 @@ export const salesFact = createTable(
 		company_id: integer('company_id')
 			.notNull()
 			.references(() => companyDimension.id, {
-				onDelete: 'no action',
-				onUpdate: 'no action',
+				onDelete: 'cascade',
+				onUpdate: 'cascade',
 			})
 			.notNull(),
 		product_id: integer('product_id')
 			.references(() => productDimension.id, {
-				onDelete: 'no action',
-				onUpdate: 'no action',
+				onDelete: 'cascade',
+				onUpdate: 'cascade',
 			})
 			.notNull(),
 		customer_id: integer('customer_id')
 			.references(() => customerDimension.id, {
-				onDelete: 'no action',
-				onUpdate: 'no action',
+				onDelete: 'cascade',
+				onUpdate: 'cascade',
 			})
 			.notNull(),
 		geo_id: integer('geo_id')
 			.references(() => geoDimension.id, {
-				onDelete: 'no action',
-				onUpdate: 'no action',
+				onDelete: 'cascade',
+				onUpdate: 'cascade',
 			})
 			.notNull(),
 		time_id: integer('time_id')
 			.references(() => timeDimension.id, {
-				onDelete: 'no action',
-				onUpdate: 'no action',
+				onDelete: 'cascade',
+				onUpdate: 'cascade',
 			})
 			.notNull(),
 	},

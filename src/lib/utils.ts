@@ -91,3 +91,6 @@ export function getBaseUrl() {
 		return `https://${env.NEXTAUTH_URL}`;
 	}
 }
+
+export const ensureArray = <T>(value: T | T[]): T[] =>
+	Array.isArray(value) ? value : [value];

@@ -2,16 +2,19 @@
 
 import { useState } from 'react';
 import { api } from '@/trpc/react';
+import { LoaderCircle } from 'lucide-react';
 
 import { convertFileToBase64 } from '@/lib/utils';
 import FileUploader from '@/components/file-uploader';
 
+import PopulateButton from './populate-button';
+
 const Testing: React.FunctionComponent = (): React.ReactNode => {
 	const [files, setFiles] = useState<File[]>([]);
 
-	const uploadFile = api.post.file.useMutation({
-		onSuccess: () => {
-			console.log('File uploaded');
+	const uploadFile = api.upload.file.useMutation({
+		onSuccess: (res) => {
+			console.log(res);
 		},
 		onError: (error) => {
 			console.log('Error uploading file', error);
@@ -26,12 +29,17 @@ const Testing: React.FunctionComponent = (): React.ReactNode => {
 	return (
 		<div>
 			<h1>Testing</h1>
+			<PopulateButton />
 			<FileUploader
 				maxFiles={1}
 				maxSize={1 * 1024 * 1024}
 				onValueChange={setFiles}
 				onUpload={handleUpload}
+				disabled={uploadFile.isPending}
 			/>
+			{uploadFile.isPending && (
+				<LoaderCircle className='size-8 animate-spin' />
+			)}
 		</div>
 	);
 };

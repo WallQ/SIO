@@ -5,6 +5,6 @@ export type Customer = {
 	phone: string;
 	street: string;
 	city: string;
-	zip: string;
+	postal_code: string;
 	country: string;
 };
