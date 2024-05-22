@@ -1,11 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useCompanyStore } from '@/stores/companies';
 import { api } from '@/trpc/react';
 import { Check, ChevronsUpDown, CirclePlus } from 'lucide-react';
-import { useState } from 'react';
 
-import FileUploader from '@/components/file-uploader';
+import { cn, convertFileToBase64, getInitials } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,7 +31,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn, convertFileToBase64, getInitials } from '@/lib/utils';
+import FileUploader from '@/components/file-uploader';
 
 const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 	const [openModal, setOpenModal] = useState(false);
@@ -45,9 +45,9 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 
 	const { data: companies } = api.companies.getCompanies.useQuery();
 
-	const uploadFile = api.post.file.useMutation({
-		onSuccess: () => {
-			console.log('File uploaded');
+	const uploadFile = api.upload.file.useMutation({
+		onSuccess: (res) => {
+			console.log(res);
 		},
 		onError: (error) => {
 			console.log('Error uploading file', error);
@@ -153,14 +153,18 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 					maxSize={1 * 1024 * 1024}
 					onValueChange={setFiles}
 					onUpload={handleUpload}
+					disabled={uploadFile.isPending}
 				/>
 				<DialogFooter>
 					<Button
 						variant='outline'
-						onClick={() => setOpenModal(false)}>
+						onClick={() => setOpenModal(false)}
+						disabled={uploadFile.isPending}>
 						Cancel
 					</Button>
-					<Button type='submit'>Continue</Button>
+					<Button type='submit' disabled={uploadFile.isPending}>
+						Continue
+					</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

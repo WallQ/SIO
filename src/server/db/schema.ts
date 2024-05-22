@@ -15,7 +15,7 @@ import { type AdapterAccount } from 'next-auth/adapters';
 export const createTable = pgTableCreator((name) => `sio_${name}`);
 
 export const companyDimension = createTable('company_dimension', {
-	id: integer('id').notNull().primaryKey(),
+	id: serial('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
 	street: varchar('street', { length: 64 }).notNull(),
 	city: varchar('city', { length: 64 }).notNull(),
@@ -31,7 +31,7 @@ export const companyDimensionRelations = relations(
 );
 
 export const productDimension = createTable('product_dimension', {
-	id: integer('id').notNull().primaryKey(),
+	id: serial('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
 	category: varchar('category', { length: 64 }).notNull(),
 });
@@ -44,7 +44,7 @@ export const productDimensionRelations = relations(
 );
 
 export const customerDimension = createTable('customer_dimension', {
-	id: integer('id').notNull().primaryKey(),
+	id: serial('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
 	email: varchar('email', { length: 64 }).notNull(),
 	telephone: varchar('telephone', { length: 64 }).notNull(),
@@ -77,6 +77,7 @@ export const timeDimension = createTable('time_dimension', {
 	year: integer('year').notNull(),
 	month: integer('month').notNull(),
 	day: integer('day').notNull(),
+	day_of_week: integer('day_of_week').notNull(),
 	week: integer('week').notNull(),
 	quarter: integer('quarter').notNull(),
 });

@@ -26,40 +26,42 @@ export const uploadRouter = createTRPCRouter({
 		.input(z.object({ file: z.string() }))
 		.mutation(async ({ input, ctx }) => {
 			const xml = convertStringToXML(input.file);
-
 			const parser = new XMLParser();
 			const result = parser.parse(xml) as ParsedXML;
 
 			const { Company, Customers, Products, Invoices } = result.TOCOnline;
-
 			if (!Company || !Customers || !Products || !Invoices)
 				throw new Error('Invalid XML file');
 
-			await ctx.db
+			const insertedCompany = await ctx.db
 				.insert(companyDimension)
 				.values({
-					id: Company.Id,
 					name: Company.Name,
 					street: Company.Address.Street,
 					city: Company.Address.City,
 					postal_code: Company.Address.PostalCode,
 					country: Company.Address.Country,
 				})
-				.onConflictDoNothing();
+				.onConflictDoNothing()
+				.returning()
+				.then((res) => res[0]);
+
+			if (!insertedCompany) throw new Error('Failed to insert company!');
 
 			const parsedProducts = Products.Product.map((product) => ({
-				id: product.Id,
+				old_id: product.Id,
 				name: product.Name,
 				category: product.Category,
 			}));
 
-			await ctx.db
+			const insertedProducts = await ctx.db
 				.insert(productDimension)
 				.values(parsedProducts)
-				.onConflictDoNothing();
+				.onConflictDoNothing()
+				.returning();
 
 			const parsedCustomers = Customers.Customer.map((customer) => ({
-				id: customer.Id,
+				old_id: customer.Id,
 				name: customer.Name,
 				email: customer.Email,
 				telephone: customer.Telephone,
@@ -69,12 +71,17 @@ export const uploadRouter = createTRPCRouter({
 				country: customer.Address.Country,
 			}));
 
-			await ctx.db
+			const insertedCustomers = await ctx.db
 				.insert(customerDimension)
 				.values(parsedCustomers)
-				.onConflictDoNothing();
+				.onConflictDoNothing()
+				.returning();
 
-			const geoMap = new Map<string, { city: string; country: string }>();
+			const storedGeo = await ctx.db.select().from(geoDimension);
+			const geoMap = new Map<string, { city: string; country: string }>(
+				storedGeo.map((g) => [`${g.city}_${g.country}`, g]),
+			);
+
 			parsedCustomers.forEach((customer) => {
 				const key = `${customer.city}_${customer.country}`;
 				if (!geoMap.has(key))
@@ -85,70 +92,100 @@ export const uploadRouter = createTRPCRouter({
 			});
 
 			const parsedGeo = [...geoMap.values()];
-
-			const insertedGeo = await ctx.db
+			await ctx.db
 				.insert(geoDimension)
 				.values(parsedGeo)
-				.onConflictDoNothing()
-				.returning();
+				.onConflictDoNothing();
 
 			const geoIdMap = new Map(
-				insertedGeo.map((g) => [`${g.city}_${g.country}`, g.id]),
+				await ctx.db
+					.select()
+					.from(geoDimension)
+					.then((geo) =>
+						geo.map((g) => [`${g.city}_${g.country}`, g.id]),
+					),
 			);
 
-			const parsedTime = [
-				...new Set(
-					Invoices.Invoice.map((invoice) => {
-						const date = parseISO(invoice.Date);
-						return {
-							date: date,
-							year: getYear(date),
-							month: getMonth(date) + 1,
-							day: getDate(date),
-							week: getWeek(date),
-							quarter: getQuarter(date),
-						};
-					}),
-				),
-			];
+			const storedTime = await ctx.db.select().from(timeDimension);
+			const timeMap = new Map<string, Date>(
+				storedTime.map((t) => [t.date.toISOString(), t.date]),
+			);
 
-			const insertedTime = await ctx.db
+			Invoices.Invoice.forEach((invoice) => {
+				const date = parseISO(invoice.Date);
+				const key = date.toISOString();
+				if (!timeMap.has(key)) timeMap.set(key, date);
+			});
+
+			const parsedTime = [...timeMap.values()].map((date) => ({
+				date: date,
+				year: getYear(date),
+				month: getMonth(date) + 1,
+				day: getDate(date),
+				day_of_week: date.getDay(),
+				week: getWeek(date),
+				quarter: getQuarter(date),
+			}));
+
+			await ctx.db
 				.insert(timeDimension)
 				.values(parsedTime)
-				.onConflictDoNothing()
-				.returning();
+				.onConflictDoNothing();
 
 			const timeIdMap = new Map(
-				insertedTime.map((t) => [t.date.toISOString(), t.id]),
+				await ctx.db
+					.select()
+					.from(timeDimension)
+					.then((times) =>
+						times.map((t) => [t.date.toISOString(), t.id]),
+					),
 			);
 
 			const parsedSales = Invoices.Invoice.flatMap((invoice) => {
 				const timeId = timeIdMap.get(
 					parseISO(invoice.Date).toISOString(),
 				);
-				if (!timeId) throw new Error('Time ID not found');
+				if (!timeId) throw new Error('Time ID not found!');
 
-				const customer = parsedCustomers.find(
-					(c) => c.id === invoice.CustomerID,
+				const oldCustomer = parsedCustomers.find(
+					(c) => c.old_id === invoice.CustomerID,
 				);
-				if (!customer) throw new Error('Customer not found');
+				if (!oldCustomer) throw new Error('Old customer ID not found!');
+
+				const customer = insertedCustomers.find(
+					(c) => c.email === oldCustomer.email,
+				);
+				if (!customer) throw new Error('Customer not found!');
 
 				const geoKey = `${customer.city}_${customer.country}`;
 				const geoId = geoIdMap.get(geoKey);
-				if (!geoId) throw new Error('Geo ID not found');
+				if (!geoId) throw new Error('Geo ID not found!');
 
 				const lines = ensureArray(invoice.Line);
 
-				return lines.map((line) => ({
-					tax_payable: invoice.TaxPayable,
-					net_total: invoice.NetTotal,
-					gross_total: invoice.GrossTotal,
-					company_id: Company.Id,
-					product_id: line.ProductID,
-					customer_id: invoice.CustomerID,
-					geo_id: geoId,
-					time_id: timeId,
-				}));
+				return lines.map((line) => {
+					const oldProduct = parsedProducts.find(
+						(p) => p.old_id === line.ProductID,
+					);
+					if (!oldProduct)
+						throw new Error('Old product ID not found!');
+
+					const product = insertedProducts.find(
+						(p) => p.name === oldProduct.name,
+					);
+					if (!product) throw new Error('Product not found!');
+
+					return {
+						tax_payable: invoice.TaxPayable,
+						net_total: invoice.NetTotal,
+						gross_total: invoice.GrossTotal,
+						company_id: insertedCompany.id,
+						product_id: product.id,
+						customer_id: customer.id,
+						geo_id: geoId,
+						time_id: timeId,
+					};
+				});
 			});
 
 			await ctx.db
