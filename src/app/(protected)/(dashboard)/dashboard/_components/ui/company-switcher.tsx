@@ -31,6 +31,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
+import { toast } from '@/components/ui/use-toast';
 import FileUploader from '@/components/file-uploader';
 
 const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
@@ -46,11 +47,19 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 	const { data: companies } = api.companies.getCompanies.useQuery();
 
 	const uploadFile = api.upload.file.useMutation({
-		onSuccess: (res) => {
-			console.log(res);
+		onSuccess: () => {
+			toast({
+				title: 'Everything went well!',
+				description: 'The company has been created successfully!',
+			});
+			setOpenModal(false);
 		},
 		onError: (error) => {
-			console.log('Error uploading file', error);
+			toast({
+				title: 'Something went wrong!',
+				description: error.message,
+				variant: 'destructive',
+			});
 		},
 	});
 
