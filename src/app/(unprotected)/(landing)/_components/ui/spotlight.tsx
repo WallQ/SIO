@@ -1,101 +1,57 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
-
-import { useMousePosition } from '@/hooks/useMousePosition';
+import { cn } from '@/lib/utils';
 
 type SpotlightProps = {
-	children: React.ReactNode;
 	className?: string;
-	refresh?: boolean;
+	fill?: string;
 };
 
 const Spotlight: React.FunctionComponent<SpotlightProps> = ({
-	children,
-	className = '',
-	refresh = false,
-}) => {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const mousePosition = useMousePosition();
-	const mouse = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-	const containerSize = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
-	const [boxes, setBoxes] = useState<Array<HTMLElement>>([]);
-
-	useEffect(() => {
-		containerRef.current &&
-			setBoxes(
-				Array.from(containerRef.current.children).map(
-					(el) => el as HTMLElement,
-				),
-			);
-	}, []);
-
-	useEffect(() => {
-		initContainer();
-		window.addEventListener('resize', initContainer);
-
-		return () => {
-			window.removeEventListener('resize', initContainer);
-		};
-	}, [setBoxes]);
-
-	useEffect(() => {
-		if (containerRef.current) {
-			const rect = containerRef.current.getBoundingClientRect();
-			const { w, h } = containerSize.current;
-			const x = mousePosition.x - rect.left;
-			const y = mousePosition.y - rect.top;
-			const inside = x < w && x > 0 && y < h && y > 0;
-			if (inside) {
-				mouse.current.x = x;
-				mouse.current.y = y;
-				boxes.forEach((box) => {
-					const boxX =
-						-(box.getBoundingClientRect().left - rect.left) +
-						mouse.current.x;
-					const boxY =
-						-(box.getBoundingClientRect().top - rect.top) +
-						mouse.current.y;
-					box.style.setProperty('--mouse-x', `${boxX}px`);
-					box.style.setProperty('--mouse-y', `${boxY}px`);
-				});
-			}
-		}
-	}, [boxes, mousePosition]);
-
-	useEffect(() => {
-		initContainer();
-	}, [refresh]);
-
-	const initContainer = () => {
-		if (containerRef.current) {
-			containerSize.current.w = containerRef.current.offsetWidth;
-			containerSize.current.h = containerRef.current.offsetHeight;
-		}
-	};
-
+	className,
+	fill,
+}): React.ReactNode => {
 	return (
-		<div className={className} ref={containerRef}>
-			{children}
-		</div>
+		<svg
+			className={cn(
+				'animate-spotlight pointer-events-none absolute z-[1]  h-[169%] w-[138%] opacity-0 lg:w-[84%]',
+				className,
+			)}
+			xmlns='http://www.w3.org/2000/svg'
+			viewBox='0 0 3787 2842'
+			fill='none'>
+			<g filter='url(#filter)'>
+				<ellipse
+					cx='1924.71'
+					cy='273.501'
+					rx='1924.71'
+					ry='273.501'
+					transform='matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)'
+					fill={fill ?? 'white'}
+					fillOpacity='0.21'></ellipse>
+			</g>
+			<defs>
+				<filter
+					id='filter'
+					x='0.860352'
+					y='0.838989'
+					width='3785.16'
+					height='2840.26'
+					filterUnits='userSpaceOnUse'
+					colorInterpolationFilters='sRGB'>
+					<feFlood
+						floodOpacity='0'
+						result='BackgroundImageFix'></feFlood>
+					<feBlend
+						mode='normal'
+						in='SourceGraphic'
+						in2='BackgroundImageFix'
+						result='shape'></feBlend>
+					<feGaussianBlur
+						stdDeviation='151'
+						result='effect1_foregroundBlur_1065_8'></feGaussianBlur>
+				</filter>
+			</defs>
+		</svg>
 	);
 };
 
-type SpotlightCardProps = {
-	children: React.ReactNode;
-	className?: string;
-};
-
-const SpotlightCard: React.FunctionComponent<SpotlightCardProps> = ({
-	children,
-	className = '',
-}) => {
-	return (
-		<div
-			className={`after:bg-foreground-500 relative h-full overflow-hidden rounded-md bg-input p-px before:pointer-events-none before:absolute before:-left-40 before:-top-40 before:z-10 before:h-80 before:w-80 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:rounded-full before:bg-primary before:opacity-0 before:blur-[100px] before:transition-opacity before:duration-500 after:pointer-events-none after:absolute after:-left-48 after:-top-48 after:z-30 after:h-96 after:w-96 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:rounded-full after:opacity-0 after:blur-[100px] after:transition-opacity after:duration-500 after:hover:opacity-10 before:group-hover:opacity-100 ${className}`}>
-			{children}
-		</div>
-	);
-};
-
-export { Spotlight, SpotlightCard };
+export default Spotlight;

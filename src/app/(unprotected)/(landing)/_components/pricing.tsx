@@ -8,9 +8,9 @@ import OuterWrapper from '@/components/outer-wrapper';
 import { Heading, Paragraph, Span } from '@/components/typography';
 
 import Glow from './ui/glow';
+import { Highlight, HighlightCard } from './ui/highlight';
 import Particles from './ui/particles';
 import Reveal from './ui/reveal';
-import { Spotlight, SpotlightCard } from './ui/spotlight';
 
 const plans = [
 	{
@@ -60,12 +60,12 @@ const Pricing: React.FunctionComponent = (): React.ReactNode => {
 						</Paragraph>
 					</div>
 					<Reveal>
-						<Spotlight className='group grid gap-6 md:grid-cols-12'>
+						<Highlight className='group grid gap-6 md:grid-cols-12'>
 							{plans.map((plan, index) => (
 								<div
 									key={plan.name}
 									className='group/item h-full md:col-span-6 lg:col-span-4'>
-									<SpotlightCard>
+									<HighlightCard>
 										<div className='relative z-10 h-full overflow-hidden rounded-md bg-primary-foreground'>
 											<Particles
 												className='absolute inset-0 -z-10 opacity-25 transition-opacity duration-1000 ease-in-out group-hover/item:opacity-100'
@@ -164,10 +164,10 @@ const Pricing: React.FunctionComponent = (): React.ReactNode => {
 												</Link>
 											</div>
 										</div>
-									</SpotlightCard>
+									</HighlightCard>
 								</div>
 							))}
-						</Spotlight>
+						</Highlight>
 					</Reveal>
 				</InnerWrapper>
 			</OuterWrapper>

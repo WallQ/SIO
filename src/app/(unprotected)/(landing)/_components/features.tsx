@@ -8,6 +8,7 @@ import OuterWrapper from '@/components/outer-wrapper';
 import { Heading, Paragraph, Span } from '@/components/typography';
 
 import Reveal from './ui/reveal';
+import Spotlight from './ui/spotlight';
 
 const features = [
 	{
@@ -34,7 +35,13 @@ const features = [
 
 const Features: React.FunctionComponent = (): React.ReactNode => {
 	return (
-		<section id='features' className='overflow-hidden border-t'>
+		<section id='features' className='relative overflow-hidden border-t'>
+			<Reveal movement={false}>
+				<Spotlight
+					className='-top-40 left-0 md:-top-20 md:left-60'
+					fill='white'
+				/>
+			</Reveal>
 			<OuterWrapper>
 				<InnerWrapper styles='lg:flex-row items-start'>
 					<div className='flex w-full flex-shrink-0 flex-col gap-6 lg:max-w-2xl'>

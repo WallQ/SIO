@@ -40,12 +40,12 @@ const Hero: React.FunctionComponent = (): React.ReactNode => {
 			initial='hidden'
 			animate='show'
 			viewport={{ once: true }}>
-			<section id='hero' className='h-screen'>
+			<section id='hero' className='relative h-screen'>
+				<Particles
+					className='pointer-events-none absolute inset-0 -z-10'
+					quantity={75}
+				/>
 				<OuterWrapper>
-					<Particles
-						className='pointer-events-none absolute inset-0 -z-10'
-						quantity={50}
-					/>
 					<Reveal movement={false}>
 						<Glow position='bottom' />
 					</Reveal>
