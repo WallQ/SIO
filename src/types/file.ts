@@ -45,6 +45,7 @@ interface Line {
 
 interface Invoice {
 	Id: string;
+	Hash: string;
 	Date: string;
 	TaxPayable: number;
 	NetTotal: number;

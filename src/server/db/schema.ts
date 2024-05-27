@@ -14,6 +14,167 @@ import { type AdapterAccount } from 'next-auth/adapters';
 
 export const createTable = pgTableCreator((name) => `sio_${name}`);
 
+export const company = createTable('company', {
+    id: serial('id').notNull().primaryKey(),
+    name: varchar('name', { length: 64 }).notNull(),
+    address_id: integer('address_id').notNull().references(() => address.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+});
+
+export const address = createTable('address', {
+    id: serial('id').notNull().primaryKey(),
+    street: varchar('street', { length: 64 }).notNull(),
+    city: varchar('city', { length: 64 }).notNull(),
+    postal_code: varchar('postal_code', { length: 64 }).notNull(),
+    country: varchar('country', { length: 64 }).notNull(),
+});
+
+export const customer = createTable('customer', {
+    id: serial('id').notNull().primaryKey(),
+    name: varchar('name', { length: 64 }).notNull(),
+    email: varchar('email', { length: 64 }).notNull(),
+    telephone: varchar('telephone', { length: 64 }).notNull(),
+    address_id: integer('address_id').notNull().references(() => address.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+});
+
+export const supplier = createTable('supplier', {
+    id: serial('id').notNull().primaryKey(),
+    name: varchar('name', { length: 64 }).notNull(),
+    email: varchar('email', { length: 64 }).notNull(),
+    telephone: varchar('telephone', { length: 64 }).notNull(),
+    address_id: integer('address_id').notNull().references(() => address.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+});
+
+export const product = createTable('product', {
+    id: serial('id').notNull().primaryKey(),
+    name: varchar('name', { length: 64 }).notNull(),
+    category: varchar('category', { length: 64 }).notNull(),
+    company_id: integer('company_id').notNull().references(() => company.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+});
+
+export const invoice = createTable('invoice', {
+    id: serial('id').notNull().primaryKey(),
+    hash: varchar('hash', { length: 64 }).notNull(),
+	invoiceType: varchar('invoiceType', { length: 64 }).notNull(),
+    date: timestamp('date').notNull(),
+    taxPayable: doublePrecision('taxPayable').notNull(),
+    netTotal: doublePrecision('netTotal').notNull(),
+    grossTotal: doublePrecision('grossTotal').notNull(),
+    customer_id: integer('customer_id').references(() => customer.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+    company_id: integer('company_id').notNull().references(() => company.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+    supplier_id: integer('supplier_id').references(() => supplier.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+});
+
+export const invoiceLine = createTable('invoiceLine', {
+    id: serial('id').notNull().primaryKey(),
+    quantity: integer('quantity').notNull(),
+    unitPrice: doublePrecision('netTotal').notNull(),
+    amount: doublePrecision('amount').notNull(),
+    product_id: integer('product_id').notNull().references(() => product.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+    invoice_id: integer('invoice_id').notNull().references(() => invoice.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    }),
+});
+
+export const supplierRelations = relations(supplier, ({ many, one }) => ({
+    invoice: many(invoice),
+    address: one(address, {
+        fields: [supplier.address_id],
+        references: [address.id],
+    }),
+}));
+
+export const invoiceRelations = relations(invoice, ({ one, many }) => ({
+    invoiceLine: many(invoiceLine),
+    supplier: one(supplier, {
+        fields: [invoice.supplier_id],
+        references: [supplier.id],
+    }),
+    company: one(company, {
+        fields: [invoice.company_id],
+        references: [company.id],
+    }),
+    customer: one(customer, {
+        fields: [invoice.customer_id],
+        references: [customer.id],
+    }),
+}));
+
+export const addressRelations = relations(address, ({ one }) => ({
+    supplier: one(supplier, {
+        fields: [address.id],
+        references: [supplier.address_id],
+    }),
+    company: one(company, {
+        fields: [address.id],
+        references: [company.address_id],
+    }),
+    customer: one(customer, {
+        fields: [address.id],
+        references: [customer.address_id],
+    }),
+}));
+
+export const customerRelations = relations(customer, ({ one, many }) => ({
+    invoice: many(invoice),
+    address: one(address, {
+        fields: [customer.address_id],
+        references: [address.id],
+    }),
+}));
+
+export const companyRelations = relations(company, ({ one, many }) => ({
+    invoice: many(invoice),
+    product: many(product),
+    address: one(address, {
+        fields: [company.address_id],
+        references: [address.id],
+    }),
+}));
+
+export const productRelations = relations(product, ({ one, many }) => ({
+    invoiceLine: many(invoiceLine),
+    company: one(company, {
+        fields: [product.company_id],
+        references: [company.id],
+    }),
+}));
+
+export const invoiceLineRelations = relations(invoiceLine, ({ one, many }) => ({
+    invoice: one(invoice, {
+        fields: [invoiceLine.invoice_id],
+        references: [invoice.id],
+    }),
+    product: one(product, {
+        fields: [invoiceLine.product_id],
+        references: [product.id],
+    }),
+}));
+
 export const companyDimension = createTable('company_dimension', {
 	id: serial('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
