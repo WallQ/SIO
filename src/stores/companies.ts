@@ -1,10 +1,9 @@
+import { companies } from '@/server/db/relational-schema';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { type Company } from '@/types/company';
-
 type CompanyStore = {
-	selectedCompany: Company | null;
+	selectedCompany: typeof companies | null;
 	setSelectedCompany: (selectedCompany: Company) => void;
 };
 

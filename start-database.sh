@@ -9,43 +9,59 @@
 
 # On Linux and macOS you can run this script directly - `./start-database.sh`
 
-DB_CONTAINER_NAME="sio-postgres"
+create_container() {
+  local DB_URL=$1
+
+  local DB_CONTAINER_NAME
+  local DB_NAME
+  local DB_PASSWORD
+  local DB_PORT
+  local DB_HOST
+
+  DB_URL=$(sed -e 's/^"//' -e 's/"$//' <<<"$DB_URL")
+  DB_NAME=$(echo "$DB_URL" | awk -F'/' '{print $4}')
+  DB_CONTAINER_NAME="sio-${DB_NAME}-postgresql"
+  DB_PASSWORD=$(echo "$DB_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
+  DB_PORT=$(echo "$DB_URL" | awk -F':' '{print $4}' | awk -F'/' '{print $1}')
+  DB_HOST=$(echo "$DB_URL" | awk -F'@' '{print $2}' | awk -F':' '{print $1}')
+
+  if [ -z "$DB_NAME" ] || [ -z "$DB_CONTAINER_NAME" ] || [ -z "$DB_PASSWORD" ] || [ -z "$DB_PORT" ] || [ -z "$DB_HOST" ]; then
+    echo "Failed to extract database information from .env file"
+    exit 1
+  fi
+
+  if [ "$(docker ps -q -f name=$DB_CONTAINER_NAME)" ]; then
+    echo "Database container '$DB_CONTAINER_NAME' already running"
+    return 0
+  fi
+
+  if [ "$(docker ps -q -a -f name=$DB_CONTAINER_NAME)" ]; then
+    docker start "$DB_CONTAINER_NAME"
+    echo "Existing database container '$DB_CONTAINER_NAME' started"
+    return 0
+  fi
+
+  docker run -d \
+    --name $DB_CONTAINER_NAME \
+    -e POSTGRES_PASSWORD="$DB_PASSWORD" \
+    -e POSTGRES_DB=$DB_NAME \
+    -p $DB_PORT:5432 \
+    docker.io/postgres && echo "Database container '$DB_CONTAINER_NAME' was successfully created"
+}
 
 if ! [ -x "$(command -v docker)" ]; then
   echo -e "Docker is not installed. Please install docker and try again.\nDocker install guide: https://docs.docker.com/engine/install/"
   exit 1
 fi
 
-if [ "$(docker ps -q -f name=$DB_CONTAINER_NAME)" ]; then
-  echo "Database container '$DB_CONTAINER_NAME' already running"
-  exit 0
+if [ ! -f .env ]; then
+  echo "File .env not found. Please create a .env file in the root directory of the project with the database URL"
+  exit 1
 fi
 
-if [ "$(docker ps -q -a -f name=$DB_CONTAINER_NAME)" ]; then
-  docker start "$DB_CONTAINER_NAME"
-  echo "Existing database container '$DB_CONTAINER_NAME' started"
-  exit 0
-fi
-
-set -a
-source .env
-
-DB_PASSWORD=$(echo "$DATABASE_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
-
-if [ "$DB_PASSWORD" = "password" ]; then
-  echo "You are using the default database password"
-  read -p "Should we generate a random password for you? [y/N]: " -r REPLY
-  if ! [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Please set a password in the .env file and try again"
-    exit 1
+while IFS= read -r line; do
+  if [[ "$line" == *_DB_URL=* ]]; then
+    DB_URL=$(echo "$line" | cut -d'=' -f2)
+    create_container "$DB_URL"
   fi
-  DB_PASSWORD=$(openssl rand -base64 12 | tr '+/' '-_')
-  sed -i -e "s#:password@#:$DB_PASSWORD@#" .env
-fi
-
-docker run -d \
-  --name $DB_CONTAINER_NAME \
-  -e POSTGRES_PASSWORD="$DB_PASSWORD" \
-  -e POSTGRES_DB=sio \
-  -p 5432:5432 \
-  docker.io/postgres && echo "Database container '$DB_CONTAINER_NAME' was successfully created"
+done < .env

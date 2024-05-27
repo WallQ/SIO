@@ -5,8 +5,10 @@
 	"type": "module",
 	"scripts": {
 		"build": "next build",
-		"db:push": "drizzle-kit push",
-		"db:studio": "drizzle-kit studio",
+		"db:push-r": "drizzle-kit push --config=drizzle.relational.config.ts",
+		"db:push-s": "drizzle-kit push --config=drizzle.star.config.ts",
+		"db:studio-r": "drizzle-kit studio --config=drizzle.relational.config.ts --port=3001",
+		"db:studio-s": "drizzle-kit studio --config=drizzle.star.config.ts --port=3002",
 		"dev": "next dev --turbo",
 		"lint": "next lint",
 		"start": "next start"
@@ -116,6 +118,5 @@
 	},
 	"ct3aMetadata": {
 		"initVersion": "7.31.0"
-	},
-	"packageManager": "pnpm@9.1.2"
+	}
 }

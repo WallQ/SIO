@@ -5,12 +5,12 @@ import {
 	productDimension,
 	salesFact,
 	timeDimension,
-} from '@/server/db/schema';
+} from '@/server/db/star-schema';
 import { and, eq, sql } from 'drizzle-orm';
 
 export const analyticsRouter = createTRPCRouter({
 	totalSalesRevenueByYear: protectedProcedure.query(({ ctx }) => {
-		return ctx.db
+		return ctx.db.star
 			.select({
 				month: sql<string>`DATE_TRUNC('month', ${timeDimension.date})`.as(
 					'month',
@@ -25,7 +25,7 @@ export const analyticsRouter = createTRPCRouter({
 	}),
 
 	totalCustomers: protectedProcedure.query(({ ctx }) => {
-		return ctx.db
+		return ctx.db.star
 			.select({
 				amount: sql<number>`COUNT(${customerDimension.id})`.as(
 					'amount',
@@ -35,7 +35,7 @@ export const analyticsRouter = createTRPCRouter({
 	}),
 
 	productsByRevenue: protectedProcedure.query(({ ctx }) => {
-		return ctx.db
+		return ctx.db.star
 			.select({
 				product: productDimension.name,
 				quantity: sql<number>`COUNT(${salesFact.id})`.as('quantity'),
@@ -52,7 +52,7 @@ export const analyticsRouter = createTRPCRouter({
 	}),
 
 	citiesByRevenue: protectedProcedure.query(({ ctx }) => {
-		return ctx.db
+		return ctx.db.star
 			.select({
 				city: geoDimension.city,
 				amount: sql<number>`SUM(${salesFact.gross_total})`.as('amount'),
@@ -75,7 +75,7 @@ export const analyticsRouter = createTRPCRouter({
 	}),
 
 	customersByRevenue: protectedProcedure.query(({ ctx }) => {
-		return ctx.db
+		return ctx.db.star
 			.select({
 				name: customerDimension.name,
 				amount: sql<number>`SUM(${salesFact.gross_total})`.as('amount'),

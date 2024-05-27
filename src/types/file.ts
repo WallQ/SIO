@@ -1,11 +1,11 @@
-interface Address {
+export interface Address {
 	Street: string;
 	City: string;
 	PostalCode: string;
 	Country: string;
 }
 
-interface Company {
+export interface Company {
 	Id: number;
 	Name: string;
 	Address: Address;
@@ -14,28 +14,35 @@ interface Company {
 	EndDate: string;
 }
 
-interface Customer {
+export interface Customer {
 	Id: number;
 	Name: string;
+	TaxId: number;
 	Address: Address;
 	Telephone: string;
 	Email: string;
 }
 
-interface Product {
+export interface Product {
 	Id: number;
 	Category: string;
 	Name: string;
 }
 
-interface Tax {
+export interface Status {
+	InvoiceStatus: string;
+	SourceBilling: string;
+}
+
+export interface Tax {
 	TaxType: string;
 	TaxCountryRegion: string;
 	TaxPercentage: number;
 }
 
-interface Line {
-	ProductID: number;
+export interface Line {
+	Id: number;
+	ProductId: number;
 	ProductName: string;
 	Quantity: number;
 	UnitPrice: number;
@@ -43,28 +50,24 @@ interface Line {
 	Tax: Tax;
 }
 
-interface Invoice {
+export interface Invoice {
 	Id: string;
+	Status: Status;
 	Hash: string;
 	Date: string;
+	Type: string;
+	CustomerId: number;
+	Line: Line[];
 	TaxPayable: number;
 	NetTotal: number;
 	GrossTotal: number;
-	CustomerID: number;
-	Line: Line[];
 }
 
 export interface ParsedXML {
 	TOCOnline: {
 		Company: Company;
-		Customers: {
-			Customer: Customer[];
-		};
-		Products: {
-			Product: Product[];
-		};
-		Invoices: {
-			Invoice: Invoice[];
-		};
+		Customers: Customer[];
+		Products: Product[];
+		Invoices: Invoice[];
 	};
 }

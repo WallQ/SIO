@@ -1,7 +1,7 @@
 import { env } from '@/env';
 import { APP_ROUTES } from '@/routes/app';
-import { db } from '@/server/db';
-import { createTable } from '@/server/db/schema';
+import { starDb } from '@/server/db';
+import { createTable } from '@/server/db/star-schema';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import {
 	getServerSession,
@@ -29,7 +29,7 @@ declare module 'next-auth' {
 }
 
 export const authOptions: NextAuthOptions = {
-	adapter: DrizzleAdapter(db, createTable) as Adapter,
+	adapter: DrizzleAdapter(starDb, createTable) as Adapter,
 	providers: [
 		// CredentialsProvider({
 		// 	id: 'credentials',

@@ -1,14 +1,15 @@
 'use client';
 
-import { Fragment } from 'react';
-import Link from 'next/link';
 import { APP_ROUTES } from '@/routes/app';
 import { SignInSchema, type SignIn } from '@/validators/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
+import { Fragment } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { Icons } from '@/components/icons';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -21,7 +22,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
-import { Icons } from '@/components/icons';
 
 const SignInForm: React.FunctionComponent = (): React.ReactNode => {
 	const form = useForm<SignIn>({
