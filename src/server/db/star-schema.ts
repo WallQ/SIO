@@ -12,7 +12,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { type AdapterAccount } from 'next-auth/adapters';
 
-export const createTable = pgTableCreator((name) => `sio_${name}`);
+export const createTable = pgTableCreator((name) => `${name}`);
 
 export const companyDimension = createTable('company_dimension', {
 	id: serial('id').notNull().primaryKey(),

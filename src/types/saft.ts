@@ -18,10 +18,10 @@ export interface Header {
 	BusinessName: string;
 	CompanyAddress: Address;
 	FiscalYear: number;
-	StartDate: Date;
-	EndDate: Date;
+	StartDate: string;
+	EndDate: string;
 	CurrencyCode: string;
-	DateCreated: Date;
+	DateCreated: string;
 	TaxEntity: string;
 	ProductCompanyTaxID: number;
 	SoftwareCertificateNumber: number;
@@ -45,7 +45,7 @@ export interface MasterFiles {
 export interface Customer {
 	CustomerID: number;
 	AccountID: string;
-	CustomerTaxID: number;
+	CustomerTaxID: string;
 	CompanyName: string;
 	BillingAddress: Address;
 	ShipToAddress: Address;
@@ -100,14 +100,14 @@ export interface Invoice {
 	ATCUD: string;
 	DocumentStatus: {
 		InvoiceStatus: string;
-		InvoiceStatusDate: Date;
+		InvoiceStatusDate: string;
 		SourceID: number;
 		SourceBilling: string;
 	};
 	Hash: string;
 	HashControl: number;
 	Period: number;
-	InvoiceDate: Date;
+	InvoiceDate: string;
 	InvoiceType: string;
 	SpecialRegimes: {
 		SelfBillingIndicator: number;
@@ -115,7 +115,7 @@ export interface Invoice {
 		ThirdPartiesBillingIndicator: number;
 	};
 	SourceID: number;
-	SystemEntryDate: Date;
+	SystemEntryDate: string;
 	CustomerID: number;
 	Line: Line[];
 	DocumentTotals: {
@@ -132,7 +132,7 @@ export interface Line {
 	Quantity: number;
 	UnitOfMeasure: string;
 	UnitPrice: number;
-	TaxPointDate: Date;
+	TaxPointDate: string;
 	Description: string;
 	CreditAmount: number;
 	Tax: {

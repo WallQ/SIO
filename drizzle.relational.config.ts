@@ -7,5 +7,4 @@ export default {
 	dbCredentials: {
 		url: env.RELATIONAL_DB_URL,
 	},
-	tablesFilter: ['sio_*'],
 } satisfies Config;

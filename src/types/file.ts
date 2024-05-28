@@ -17,7 +17,7 @@ export interface Company {
 export interface Customer {
 	Id: number;
 	Name: string;
-	TaxId: number;
+	TaxId: string;
 	Address: Address;
 	Telephone: string;
 	Email: string;
@@ -27,11 +27,6 @@ export interface Product {
 	Id: number;
 	Category: string;
 	Name: string;
-}
-
-export interface Status {
-	InvoiceStatus: string;
-	SourceBilling: string;
 }
 
 export interface Tax {
@@ -52,7 +47,7 @@ export interface Line {
 
 export interface Invoice {
 	Id: string;
-	Status: Status;
+	Status: string;
 	Hash: string;
 	Date: string;
 	Type: string;

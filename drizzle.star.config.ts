@@ -7,5 +7,4 @@ export default {
 	dbCredentials: {
 		url: env.STAR_DB_URL,
 	},
-	tablesFilter: ['sio_*'],
 } satisfies Config;

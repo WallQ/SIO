@@ -114,8 +114,8 @@ export const transformXML = (parsedXML: SAFT) => {
 					Country: Header.CompanyAddress.Country,
 				},
 				FiscalYear: Header.FiscalYear,
-				StartDate: Header.StartDate.toISOString(),
-				EndDate: Header.EndDate.toISOString(),
+				StartDate: Header.StartDate,
+				EndDate: Header.EndDate,
 			},
 			Customers: MasterFiles.Customer.map((customer) => ({
 				Id: customer.CustomerID,
@@ -137,15 +137,15 @@ export const transformXML = (parsedXML: SAFT) => {
 			})),
 			Invoices: SourceDocuments.SalesInvoices.Invoice.map((invoice) => ({
 				Id: invoice.InvoiceNo,
-				Status: {
-					InvoiceStatus: invoice.DocumentStatus.InvoiceStatus,
-					SourceBilling: invoice.DocumentStatus.SourceBilling,
-				},
+				Status: invoice.DocumentStatus.InvoiceStatus,
 				Hash: invoice.Hash,
-				Date: invoice.InvoiceDate.toISOString(),
+				Date: invoice.InvoiceDate,
 				Type: invoice.InvoiceType,
 				CustomerId: invoice.CustomerID,
-				Line: invoice.Line.map((line) => ({
+				Line: (Array.isArray(invoice.Line)
+					? invoice.Line
+					: [invoice.Line]
+				).map((line) => ({
 					Id: line.LineNumber,
 					ProductId: line.ProductCode,
 					ProductName: line.ProductDescription,

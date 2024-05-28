@@ -8,7 +8,7 @@ import {
 	varchar,
 } from 'drizzle-orm/pg-core';
 
-export const createTable = pgTableCreator((name) => `sio_${name}`);
+export const createTable = pgTableCreator((name) => `${name}`);
 
 export const addresses = createTable('addresses', {
 	id: serial('id').notNull().primaryKey(),
@@ -80,7 +80,7 @@ export const suppliersRelations = relations(suppliers, ({ many, one }) => ({
 export const customers = createTable('customers', {
 	id: serial('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
-	tax_id: integer('tax_id').notNull(),
+	tax_id: varchar('tax_id', { length: 64 }).notNull(),
 	address_id: integer('address_id')
 		.notNull()
 		.references(() => addresses.id, {
@@ -122,7 +122,7 @@ export const productsRelations = relations(products, ({ one, many }) => ({
 export const invoices = createTable('invoices', {
 	id: serial('id').notNull().primaryKey(),
 	status: varchar('status', { length: 64 }).notNull(),
-	hash: varchar('hash', { length: 64 }).notNull(),
+	hash: varchar('hash', { length: 256 }).notNull(),
 	date: timestamp('date').notNull(),
 	type: varchar('type', { length: 64 }).notNull(),
 	tax_payable: doublePrecision('tax_payable').notNull(),

@@ -81,9 +81,7 @@ export const uploadRouter = createTRPCRouter({
 					const address = insertedAddresses.find(
 						(a) =>
 							a.street === customer.Address.Street &&
-							a.city === customer.Address.City &&
-							a.postal_code === customer.Address.PostalCode &&
-							a.country === customer.Address.Country,
+							a.city === customer.Address.City,
 					);
 					if (!address)
 						throw new Error('Customer address not found!');
@@ -108,12 +106,17 @@ export const uploadRouter = createTRPCRouter({
 			const parsedProducts: (typeof products.$inferInsert & {
 				old_id: number;
 			})[] = [
-				...Products.map((product) => ({
-					old_id: product.Id,
-					category: product.Category,
-					name: product.Name,
-					company_id: insertedCompany.id,
-				})),
+				...Products.map((product) => {
+					if (product.Id.toString().toUpperCase() === 'OUTROS')
+						return null;
+
+					return {
+						old_id: product.Id,
+						category: product.Category,
+						name: product.Name,
+						company_id: insertedCompany.id,
+					};
+				}).filter((product) => product !== null),
 			];
 			const insertedProducts = await ctx.db.relational
 				.insert(products)
@@ -125,6 +128,8 @@ export const uploadRouter = createTRPCRouter({
 
 			const parsedInvoices: (typeof invoices.$inferInsert)[] = [
 				...Invoices.map((invoice) => {
+					if (invoice.Status.toUpperCase() === 'A') return null;
+
 					const oldCustomer = parsedCustomers.find(
 						(c) => c.old_id === invoice.CustomerId,
 					);
@@ -132,17 +137,14 @@ export const uploadRouter = createTRPCRouter({
 						throw new Error('Old customer id not found!');
 
 					const customer = insertedCustomers.find(
-						(c) =>
-							c.address_id === oldCustomer.address_id &&
-							c.email === oldCustomer.email &&
-							c.name === oldCustomer.name &&
-							c.tax_id === oldCustomer.tax_id &&
-							c.telephone === oldCustomer.telephone,
+						(c) => c.email === oldCustomer.email,
 					);
 					if (!customer) throw new Error('Customer not found!');
 
+					console.log('Customer found:', customer);
+
 					return {
-						status: `${invoice.Status.InvoiceStatus} - ${invoice.Status.SourceBilling}`,
+						status: invoice.Status,
 						hash: invoice.Hash,
 						date: parseISO(invoice.Date),
 						type: invoice.Type,
@@ -153,7 +155,7 @@ export const uploadRouter = createTRPCRouter({
 						company_id: insertedCompany.id,
 						supplier_id: null,
 					};
-				}),
+				}).filter((invoice) => invoice !== null),
 			];
 			const insertedInvoices = await ctx.db.relational
 				.insert(invoices)
@@ -163,9 +165,11 @@ export const uploadRouter = createTRPCRouter({
 			if (!insertedInvoices)
 				throw new Error('Failed to insert invoices!');
 
-			const parsedLines: (typeof lines.$inferInsert)[] = [
-				...Invoices.flatMap((invoice) =>
-					invoice.Line.map((line) => {
+			const parsedLines: (typeof lines.$inferInsert)[] = Invoices.flatMap(
+				(invoice) => {
+					if (invoice.Status.toUpperCase() === 'A') return [];
+
+					return invoice.Line.map((line) => {
 						const invoiceOfLine = insertedInvoices.find(
 							(i) => i.hash === invoice.Hash,
 						);
@@ -181,8 +185,7 @@ export const uploadRouter = createTRPCRouter({
 						const product = insertedProducts.find(
 							(p) =>
 								p.name === oldProduct.name &&
-								p.category === oldProduct.category &&
-								p.company_id === oldProduct.company_id,
+								p.category === oldProduct.category,
 						);
 						if (!product) throw new Error('Product not found!');
 
@@ -194,9 +197,9 @@ export const uploadRouter = createTRPCRouter({
 							product_id: product.id,
 							invoice_id: invoiceOfLine.id,
 						};
-					}),
-				),
-			];
+					});
+				},
+			);
 
 			await ctx.db.relational
 				.insert(lines)
