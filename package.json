@@ -7,6 +7,7 @@
 		"build": "next build",
 		"db:push-r": "drizzle-kit push --config=drizzle.relational.config.ts",
 		"db:push-s": "drizzle-kit push --config=drizzle.star.config.ts",
+		"db:push": "pnpm run db:push-r && pnpm run db:push-s",
 		"db:studio-r": "drizzle-kit studio --config=drizzle.relational.config.ts --port=3001",
 		"db:studio-s": "drizzle-kit studio --config=drizzle.star.config.ts --port=3002",
 		"dev": "next dev --turbo",
