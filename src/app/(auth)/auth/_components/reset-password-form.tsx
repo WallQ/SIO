@@ -20,7 +20,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
-const ResetPasswordForm = () => {
+const ResetPasswordForm: React.FunctionComponent = (): React.ReactNode => {
 	const form = useForm<ResetPassword>({
 		resolver: zodResolver(ResetPasswordSchema),
 		defaultValues: {

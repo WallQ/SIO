@@ -14,7 +14,7 @@ export default function AuthLayout({
 	return (
 		<main className='flex h-screen w-full flex-row'>
 			<div className='hidden w-1/2 flex-col items-center justify-center bg-foreground lg:flex'>
-				<Icons.logo className='size-1/4 stroke-background' />
+				<Icons.logo className='size-1/4 stroke-secondary' />
 			</div>
 			{children}
 		</main>

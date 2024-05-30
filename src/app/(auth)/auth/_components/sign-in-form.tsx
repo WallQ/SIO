@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
-const SignInForm = () => {
+const SignInForm: React.FunctionComponent = (): React.ReactNode => {
 	const form = useForm<SignIn>({
 		resolver: zodResolver(SignInSchema),
 		defaultValues: {
@@ -33,22 +33,35 @@ const SignInForm = () => {
 		},
 	});
 
-	const onSubmit = (data: SignIn) => {
-		// TODO: Sing In User
-		return new Promise<void>((resolve) => {
-			setTimeout(() => {
-				toast({
-					title: 'You submitted the following values:',
-					description: (
-						<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-							<code className='text-white'>
-								{JSON.stringify(data, null, 2)}
-							</code>
-						</pre>
-					),
-				});
-				resolve();
-			}, 5000);
+	const onSubmit = async ({ email, password }: SignIn) => {
+		const response = await signIn('credentials', {
+			email,
+			password,
+			redirect: true,
+		});
+
+		if (!response?.ok) {
+			form.setError('email', {
+				type: 'custom',
+				message: 'Invalid credentials',
+			});
+			form.setError('password', {
+				type: 'custom',
+				message: 'Invalid credentials',
+			});
+			form.setError('root', {
+				type: 'custom',
+				message: 'Invalid credentials',
+			});
+		}
+
+		toast({
+			title: 'You submitted the following values:',
+			description: (
+				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
+					<code className='text-white'>Testing</code>
+				</pre>
+			),
 		});
 	};
 

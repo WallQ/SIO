@@ -1,7 +1,7 @@
 import { env } from '@/env';
 import { APP_ROUTES } from '@/routes/app';
-import { db } from '@/server/db';
-import { createTable } from '@/server/db/schema';
+import { starDb } from '@/server/db';
+import { createTable } from '@/server/db/star-schema';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import {
 	getServerSession,
@@ -29,16 +29,7 @@ declare module 'next-auth' {
 }
 
 export const authOptions: NextAuthOptions = {
-	callbacks: {
-		session: ({ session, user }) => ({
-			...session,
-			user: {
-				...session.user,
-				id: user.id,
-			},
-		}),
-	},
-	adapter: DrizzleAdapter(db, createTable) as Adapter,
+	adapter: DrizzleAdapter(starDb, createTable) as Adapter,
 	providers: [
 		DiscordProvider({
 			clientId: env.DISCORD_CLIENT_ID,
@@ -53,12 +44,23 @@ export const authOptions: NextAuthOptions = {
 			clientSecret: env.GOOGLE_CLIENT_SECRET,
 		}),
 	],
+	callbacks: {
+		session: ({ session, user }) => {
+			if (!user) throw 'Unreachable with session strategy!';
+			return {
+				...session,
+				user: {
+					...session.user,
+					id: user.id,
+				},
+			};
+		},
+	},
 	pages: {
 		signIn: APP_ROUTES.AUTH.SIGN_IN,
 		newUser: APP_ROUTES.AUTH.SIGN_UP,
 		signOut: APP_ROUTES.AUTH.SIGN_OUT,
 	},
-	secret: env.NEXTAUTH_SECRET,
 	debug: env.NODE_ENV === 'development',
 };
 

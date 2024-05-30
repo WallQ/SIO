@@ -18,22 +18,23 @@ git clone <repository-url>
 pnpm install
 ```
 
-3. Set up the database:
+3. Set up the environment variables(look into .env.example file):
+
+```bash
+cp .env
+```
+
+4. Set up the database:
 
 ```bash
 ./start-database.sh
 ```
 
-4. Alter the database schema:
+5. Alter the database schema:
 
 ```bash
-pnpm run db:push
-```
-
-5. Set up the environment variables(look into .env.example file):
-
-```bash
-cp .env
+pnpm run db:push-r
+pnpm run db:push-s
 ```
 
 6. Run the application:
@@ -42,10 +43,11 @@ cp .env
 pnpm run dev
 ```
 
-7. (Optional) Interact with the database with a GUI tool:
+7. (Optional) Interact with the databases with a GUI tool:
 
 ```bash
-pnpm run db:studio
+pnpm run db:studio-r
+pnpm run db:studio-s
 ```
 
 The application should now be perfectly running locally on http://localhost:3000.

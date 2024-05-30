@@ -1,5 +1,9 @@
+import { env } from '@/env';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+
+import { type ParsedXML } from '@/types/file';
+import { type SAFT } from '@/types/saft';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -29,12 +33,30 @@ export const convertStringToXML = (base64: string) => {
 	return decodedData;
 };
 
-export const formatCurrency = (value: number, showCents = true) => {
+export const formatCurrency = (
+	value: number,
+	compact = false,
+	showCents = true,
+) => {
 	return new Intl.NumberFormat('pt-PT', {
 		style: 'currency',
 		currency: 'EUR',
+		notation: compact ? 'compact' : 'standard',
 		minimumFractionDigits: showCents ? 2 : 0,
 		maximumFractionDigits: showCents ? 2 : 0,
+	}).format(value);
+};
+
+export const formatNumber = (
+	value: number,
+	compact = false,
+	showDecimals = true,
+) => {
+	return new Intl.NumberFormat('pt-PT', {
+		style: 'decimal',
+		notation: compact ? 'compact' : 'standard',
+		minimumFractionDigits: showDecimals ? 2 : 0,
+		maximumFractionDigits: showDecimals ? 2 : 0,
 	}).format(value);
 };
 
@@ -64,3 +86,84 @@ export function formatBytes(
 			: sizes[i] ?? 'Bytes'
 	}`;
 }
+
+export function getBaseUrl() {
+	if (env.NODE_ENV === 'development') {
+		return 'http://localhost:3000';
+	} else {
+		return `https://${env.NEXTAUTH_URL}`;
+	}
+}
+
+export const ensureArray = <T>(value: T | T[]): T[] =>
+	Array.isArray(value) ? value : [value];
+
+export const transformXML = (parsedXML: SAFT) => {
+	const { AuditFile } = parsedXML;
+	const { Header, MasterFiles, SourceDocuments } = AuditFile;
+
+	const transformedData: ParsedXML = {
+		TOCOnline: {
+			Company: {
+				Id: Header.CompanyID,
+				Name: Header.CompanyName,
+				Address: {
+					Street: Header.CompanyAddress.AddressDetail,
+					City: Header.CompanyAddress.City,
+					PostalCode: Header.CompanyAddress.PostalCode,
+					Country: Header.CompanyAddress.Country,
+				},
+				FiscalYear: Header.FiscalYear,
+				StartDate: Header.StartDate,
+				EndDate: Header.EndDate,
+			},
+			Customers: MasterFiles.Customer.map((customer) => ({
+				Id: customer.CustomerID,
+				Name: customer.CompanyName,
+				TaxId: customer.CustomerTaxID,
+				Address: {
+					Street: customer.BillingAddress.AddressDetail,
+					City: customer.BillingAddress.City,
+					PostalCode: customer.BillingAddress.PostalCode,
+					Country: customer.BillingAddress.Country,
+				},
+				Telephone: customer.Telephone,
+				Email: customer.Email,
+			})),
+			Products: MasterFiles.Product.map((product) => ({
+				Id: product.ProductCode,
+				Category: product.ProductGroup,
+				Name: product.ProductDescription,
+			})),
+			Invoices: SourceDocuments.SalesInvoices.Invoice.map((invoice) => ({
+				Id: invoice.InvoiceNo,
+				Status: invoice.DocumentStatus.InvoiceStatus,
+				Hash: invoice.Hash,
+				Date: invoice.InvoiceDate,
+				Type: invoice.InvoiceType,
+				CustomerId: invoice.CustomerID,
+				Line: (Array.isArray(invoice.Line)
+					? invoice.Line
+					: [invoice.Line]
+				).map((line) => ({
+					Id: line.LineNumber,
+					ProductId: line.ProductCode,
+					ProductName: line.ProductDescription,
+					Quantity: line.Quantity,
+					UnitPrice: line.UnitPrice,
+					Amount: line.CreditAmount,
+					Tax: {
+						TaxType: line.Tax.TaxType,
+						TaxCountryRegion: line.Tax.TaxCountryRegion,
+						TaxPercentage: line.Tax.TaxPercentage,
+					},
+				})),
+				TaxPayable: invoice.DocumentTotals.TaxPayable,
+				NetTotal: invoice.DocumentTotals.NetTotal,
+				GrossTotal: invoice.DocumentTotals.GrossTotal,
+			})),
+		},
+	};
+
+	return transformedData;
+};

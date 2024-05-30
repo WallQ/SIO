@@ -7,7 +7,14 @@ import { loggerLink, unstable_httpBatchStreamLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
 import SuperJSON from 'superjson';
 
-const createQueryClient = () => new QueryClient();
+const createQueryClient = () =>
+	new QueryClient({
+		defaultOptions: {
+			queries: {
+				staleTime: 30 * 1000,
+			},
+		},
+	});
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {

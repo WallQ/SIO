@@ -13,6 +13,8 @@ export const SignInSchema = z.object({
 	remember: z.boolean().optional(),
 });
 
+export type SignIn = z.infer<typeof SignInSchema>;
+
 export const SignUpSchema = z
 	.object({
 		firstName: firstNameConstraints(),
@@ -32,9 +34,13 @@ export const SignUpSchema = z
 		},
 	);
 
+export type SignUp = z.infer<typeof SignUpSchema>;
+
 export const ForgotPasswordSchema = z.object({
 	email: emailConstraints(),
 });
+
+export type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
 
 export const ResetPasswordSchema = z
 	.object({
@@ -51,7 +57,4 @@ export const ResetPasswordSchema = z
 		},
 	);
 
-export type SignIn = z.infer<typeof SignInSchema>;
-export type SignUp = z.infer<typeof SignUpSchema>;
-export type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
 export type ResetPassword = z.infer<typeof ResetPasswordSchema>;

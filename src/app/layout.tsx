@@ -1,14 +1,12 @@
 import '@/styles/globals.css';
 
 import { type Metadata, type Viewport } from 'next/types';
-import { TRPCReactProvider } from '@/trpc/react';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 
 import { config } from '@/config/app';
 import { cn } from '@/lib/utils';
-import { Toaster } from '@/components/ui/toaster';
-import ThemeProvider from '@/components/theme-provider';
+import Providers from '@/components/providers';
 
 export const metadata: Metadata = {
 	authors: [
@@ -62,7 +60,7 @@ export const metadata: Metadata = {
 		'sio',
 	],
 	manifest: `${config.url}/site.webmanifest`,
-	metadataBase: new URL(`https://${config.url}`),
+	metadataBase: new URL(config.url),
 	openGraph: {
 		description: config.description,
 		images: [
@@ -121,15 +119,7 @@ export default function RootLayout({
 	return (
 		<html lang='en' suppressHydrationWarning>
 			<body className={cn(GeistSans.variable, GeistMono.variable)}>
-				<TRPCReactProvider>
-					<ThemeProvider
-						attribute='class'
-						defaultTheme='dark'
-						disableTransitionOnChange>
-						{children}
-						<Toaster />
-					</ThemeProvider>
-				</TRPCReactProvider>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);
