@@ -47,7 +47,6 @@ export const customerDimension = createTable('customer_dimension', {
 	id: serial('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
 	email: varchar('email', { length: 64 }).notNull(),
-	telephone: varchar('telephone', { length: 64 }).notNull(),
 	street: varchar('street', { length: 64 }).notNull(),
 	city: varchar('city', { length: 64 }).notNull(),
 	postal_code: varchar('postal_code', { length: 64 }).notNull(),

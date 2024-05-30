@@ -69,13 +69,13 @@ export const suppliers = createTable('suppliers', {
 		}),
 });
 
-export const suppliersRelations = relations(suppliers, ({ many, one }) => ({
-	invoice: many(invoices),
-	address: one(addresses, {
-		fields: [suppliers.address_id],
-		references: [addresses.id],
-	}),
-}));
+// export const suppliersRelations = relations(suppliers, ({ many, one }) => ({
+// 	invoice: many(invoices),
+// 	address: one(addresses, {
+// 		fields: [suppliers.address_id],
+// 		references: [addresses.id],
+// 	}),
+// }));
 
 export const customers = createTable('customers', {
 	id: serial('id').notNull().primaryKey(),
@@ -138,18 +138,18 @@ export const invoices = createTable('invoices', {
 		onDelete: 'cascade',
 		onUpdate: 'cascade',
 	}),
-	supplier_id: integer('supplier_id').references(() => suppliers.id, {
-		onDelete: 'cascade',
-		onUpdate: 'cascade',
-	}),
+	// supplier_id: integer('supplier_id').references(() => suppliers.id, {
+	// 	onDelete: 'cascade',
+	// 	onUpdate: 'cascade',
+	// }),
 });
 
 export const invoicesRelations = relations(invoices, ({ one, many }) => ({
 	invoiceLine: many(lines),
-	supplier: one(suppliers, {
-		fields: [invoices.supplier_id],
-		references: [suppliers.id],
-	}),
+	// supplier: one(suppliers, {
+	// 	fields: [invoices.supplier_id],
+	// 	references: [suppliers.id],
+	// }),
 	company: one(companies, {
 		fields: [invoices.company_id],
 		references: [companies.id],
