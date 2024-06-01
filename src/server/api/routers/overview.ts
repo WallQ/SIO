@@ -1,18 +1,16 @@
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import {
 	customerDimension,
-	geoDimension,
-	productDimension,
 	salesFact,
 	timeDimension,
 } from '@/server/db/star-schema';
-import { and, eq, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { monthNumberToString } from '@/lib/utils';
 
-export const analyticsRouter = createTRPCRouter({
-	totalSalesRevenue: protectedProcedure
+export const overviewRouter = createTRPCRouter({
+	totalSalesRevenueByYear: protectedProcedure
 		.input(
 			z.object({ companyId: z.number(), year: z.number().default(2023) }),
 		)
@@ -60,55 +58,30 @@ export const analyticsRouter = createTRPCRouter({
 			};
 		}),
 
-	totalCustomers: protectedProcedure.query(({ ctx }) => {
-		return ctx.db.star
-			.select({
-				amount: sql<number>`COUNT(${customerDimension.id})`.as(
-					'amount',
-				),
-			})
-			.from(customerDimension);
-	}),
-
-	productsByRevenue: protectedProcedure.query(({ ctx }) => {
-		return ctx.db.star
-			.select({
-				product: productDimension.name,
-				quantity: sql<number>`COUNT(${salesFact.id})`.as('quantity'),
-				amount: sql<number>`SUM(${salesFact.gross_total})`.as('amount'),
-			})
-			.from(salesFact)
-			.innerJoin(
-				productDimension,
-				eq(salesFact.product_id, productDimension.id),
-			)
-			.groupBy(productDimension.name)
-			.orderBy(sql<number>`SUM(${salesFact.gross_total}) DESC`)
-			.limit(3);
-	}),
-
-	citiesByRevenue: protectedProcedure.query(({ ctx }) => {
-		return ctx.db.star
-			.select({
-				city: geoDimension.city,
-				amount: sql<number>`SUM(${salesFact.gross_total})`.as('amount'),
-			})
-			.from(salesFact)
-			.innerJoin(
-				customerDimension,
-				eq(salesFact.customer_id, customerDimension.id),
-			)
-			.innerJoin(
-				geoDimension,
-				and(
-					eq(customerDimension.city, geoDimension.city),
-					eq(customerDimension.country, geoDimension.country),
-				),
-			)
-			.groupBy(geoDimension.city)
-			.orderBy(sql<number>`SUM(${salesFact.gross_total}) DESC`)
-			.limit(5);
-	}),
+	totalSalesRevenueByTrimester: protectedProcedure
+		.input(
+			z.object({ companyId: z.number(), year: z.number().default(2023) }),
+		)
+		.query(async ({ input, ctx }) => {
+			return await ctx.db.star
+				.select({
+					trimester: timeDimension.quarter,
+					amount: sql<number>`SUM(${salesFact.gross_total})`.as(
+						'amount',
+					),
+				})
+				.from(salesFact)
+				.innerJoin(
+					timeDimension,
+					eq(timeDimension.id, salesFact.time_id),
+				)
+				.where(
+					eq(timeDimension.year, input.year) &&
+						eq(salesFact.company_id, input.companyId),
+				)
+				.groupBy(timeDimension.quarter)
+				.orderBy(timeDimension.quarter);
+		}),
 
 	customersByRevenue: protectedProcedure
 		.input(

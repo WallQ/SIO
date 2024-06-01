@@ -350,7 +350,7 @@ export const uploadRouter = createTRPCRouter({
 				parsedTimeDim.add({
 					date: invoice.date,
 					year: getYear(invoice.date),
-					month: getMonth(invoice.date),
+					month: getMonth(invoice.date) + 1,
 					day: getDate(invoice.date),
 					day_of_week: getDay(invoice.date),
 					week: getWeek(invoice.date),
@@ -407,13 +407,10 @@ export const uploadRouter = createTRPCRouter({
 					);
 					if (!geo) throw new Error('Geo id not found!');
 
-					console.log('Time to find -> ', sale.date);
-					console.log('Times to search -> ', insertedTimeDim);
 					const time = insertedTimeDim.find(
 						(t) => formatISO(t.date) === formatISO(sale.date),
 					);
 					if (!time) throw new Error('Time id not found!');
-					console.log('Time found -> ', time);
 
 					return {
 						tax_payable: sale.tax_payable,

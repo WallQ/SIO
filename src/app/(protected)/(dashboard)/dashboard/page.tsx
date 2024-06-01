@@ -1,7 +1,9 @@
-import { api } from '@/trpc/server';
+'use client';
+
+import { useCompanyStore } from '@/stores/companies';
+import { api } from '@/trpc/react';
 import { ListFilterIcon } from 'lucide-react';
 
-import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -14,22 +16,34 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import CustomerStat from './_components/customer-stat';
+import CustomersByRevenue from './_components/analytics/customers-by-revenue';
+import TotalSalesRevenueByYear from './_components/analytics/total-sales-revenue-by-year';
 import Overview from './_components/overview';
-import StatCard from './_components/stat-card';
 
-export default async function Dashboard() {
-	const [productsByRevenue, citiesByRevenue, customersByRevenue] =
-		await Promise.all([
-			api.analytics.productsByRevenue(),
-			api.analytics.citiesByRevenue(),
-			api.analytics.customersByRevenue(),
-		]);
+export default function Dashboard() {
+	const selectedCompany = useCompanyStore((state) => state.selectedCompany);
+
+	const totalSalesRevenueByYear =
+		api.overview.totalSalesRevenueByYear.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+			year: 2023,
+		});
+
+	const totalSalesRevenueByTrimester =
+		api.overview.totalSalesRevenueByTrimester.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+			year: 2023,
+		});
+
+	const customersByRevenue = api.overview.customersByRevenue.useQuery({
+		companyId: selectedCompany ? selectedCompany.id : 0,
+		year: 2023,
+	});
 
 	return (
 		<main className='flex w-full flex-1 flex-col items-start justify-between gap-4 p-4 sm:px-6 sm:py-0'>
 			<div className='grid w-full grid-cols-4 gap-8'>
-				{productsByRevenue ? (
+				{/* {productsByRevenue ? (
 					<table className='border border-red-500'>
 						<thead>
 							<tr>
@@ -79,62 +93,18 @@ export default async function Dashboard() {
 						</tfoot>
 					</table>
 				) : null}
-				{customersByRevenue ? (
-					<table className='border border-red-500'>
-						<thead>
-							<tr>
-								<th>Customer</th>
-								<th>Amount</th>
-							</tr>
-						</thead>
-						<tbody>
-							{customersByRevenue.map((item, index) => (
-								<tr
-									key={`${index}-${item.amount}-${item.name}`}>
-									<td>{item.name}</td>
-									<td>{formatCurrency(item.amount)}</td>
-								</tr>
-							))}
-						</tbody>
-						<tfoot>
-							<tr>
-								<td>Total Revenue by Customer</td>
-							</tr>
-						</tfoot>
-					</table>
-				) : null}
+				*/}
 			</div>
 			<div className='grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
-				<StatCard
-					label='Yearly Total Sales Revenue'
-					amount={1000000.0}
-					diffrence={-50}
-					time='year'
-				/>
-				<StatCard
-					label='Monthly Testing 2'
-					amount={100000.0}
-					diffrence={-25}
-					time='month'
-				/>
-				<StatCard
-					label='Weekly Testing 3'
-					amount={1000.0}
-					diffrence={0}
-					time='week'
-				/>
-				<StatCard
-					label='Daily Testing 4'
-					amount={100.0}
-					diffrence={25}
-					time='day'
-				/>
-				<StatCard
-					label='Testing 5'
-					amount={0}
-					diffrence={50}
-					time='day'
-				/>
+				{totalSalesRevenueByYear.isLoading ? (
+					<div>Loading...</div>
+				) : totalSalesRevenueByYear.isError ? (
+					<div>Error: {totalSalesRevenueByYear.error.message}</div>
+				) : totalSalesRevenueByYear.data ? (
+					<TotalSalesRevenueByYear
+						data={totalSalesRevenueByYear.data}
+					/>
+				) : null}
 			</div>
 			<Tabs defaultValue='month' className='w-full'>
 				<div className='flex items-center'>
@@ -171,20 +141,44 @@ export default async function Dashboard() {
 					<div className='grid gap-4 lg:grid-cols-7'>
 						<Card className='lg:col-span-5'>
 							<CardHeader>
-								<CardTitle>Overview</CardTitle>
+								<CardTitle>
+									Total Sales Revenue Per Trimester
+								</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<Overview />
+								{totalSalesRevenueByTrimester.isLoading ? (
+									<div>Loading...</div>
+								) : totalSalesRevenueByTrimester.isError ? (
+									<div>
+										Error:{' '}
+										{
+											totalSalesRevenueByTrimester.error
+												.message
+										}
+									</div>
+								) : totalSalesRevenueByTrimester.data ? (
+									<Overview
+										data={totalSalesRevenueByTrimester.data}
+									/>
+								) : null}
 							</CardContent>
 						</Card>
-						<Card className='lg:col-span-2'>
-							<CardHeader>
-								<CardTitle>Recent Sales</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CustomerStat data={customersByRevenue} />
-							</CardContent>
-						</Card>
+						{customersByRevenue.isLoading ? (
+							<div>Loading...</div>
+						) : customersByRevenue.isError ? (
+							<div>Error: {customersByRevenue.error.message}</div>
+						) : customersByRevenue.data ? (
+							<Card className='lg:col-span-2'>
+								<CardHeader>
+									<CardTitle>Customers by Revenue</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<CustomersByRevenue
+										data={customersByRevenue.data}
+									/>{' '}
+								</CardContent>
+							</Card>
+						) : null}
 					</div>
 				</TabsContent>
 			</Tabs>

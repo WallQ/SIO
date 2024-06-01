@@ -6,11 +6,14 @@ import { cn, formatCurrency } from '@/lib/utils';
 
 const colors = ['cyan', 'blue', 'indigo', 'purple', 'fuchsia'];
 
-type CustomerStatProps = {
-	data: { name: string; amount: number }[];
+type CustomersByRevenueProps = {
+	data: {
+		name: string;
+		amount: number;
+	}[];
 };
 
-const CustomerStat: React.FunctionComponent<CustomerStatProps> = ({
+const CustomersByRevenue: React.FunctionComponent<CustomersByRevenueProps> = ({
 	data,
 }): React.ReactNode => {
 	return (
@@ -64,4 +67,4 @@ const CustomerStat: React.FunctionComponent<CustomerStatProps> = ({
 	);
 };
 
-export default CustomerStat;
+export default CustomersByRevenue;

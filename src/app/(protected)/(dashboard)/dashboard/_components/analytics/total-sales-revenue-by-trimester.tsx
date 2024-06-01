@@ -23,10 +23,13 @@ const chartdata = [
 	},
 ];
 type OverviewProps = {
-	//
+	data: {
+		trimester: number;
+		amount: number;
+	}[];
 };
 
-const Overview: React.FunctionComponent<
+const TotalSalesRevenueByTrimester: React.FunctionComponent<
 	OverviewProps
 > = ({}): React.ReactNode => {
 	return (
@@ -44,4 +47,4 @@ const Overview: React.FunctionComponent<
 	);
 };
 
-export default Overview;
+export default TotalSalesRevenueByTrimester;

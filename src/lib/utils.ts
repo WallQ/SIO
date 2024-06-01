@@ -167,3 +167,51 @@ export const transformXML = (parsedXML: SAFT) => {
 
 	return transformedData;
 };
+
+export function monthNumberToString(monthNumber: number): string {
+	const monthNames: string[] = [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'May',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec',
+	];
+
+	if (monthNumber < 1 || monthNumber > 12) {
+		throw new Error('Invalid month number. Must be between 1 and 12.');
+	}
+
+	const monthName = monthNames[monthNumber - 1];
+	if (!monthName) {
+		throw new Error('Invalid month number. Must be between 1 and 12.');
+	}
+
+	return monthName;
+}
+
+export function trimesterNumberToString(trimesterNumber: number): string {
+	const trimesterNames: string[] = [
+		'1st Trimester',
+		'2nd Trimester',
+		'3rd Trimester',
+		'4th Trimester',
+	];
+
+	if (trimesterNumber < 1 || trimesterNumber > 4) {
+		throw new Error('Invalid month number. Must be between 1 and 4.');
+	}
+
+	const trimesterName = trimesterNames[trimesterNumber - 1];
+	if (!trimesterName) {
+		throw new Error('Invalid month number. Must be between 1 and 4.');
+	}
+
+	return trimesterName;
+}
