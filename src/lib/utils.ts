@@ -1,4 +1,5 @@
 import { env } from '@/env';
+import { type DeltaType } from '@tremor/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -212,3 +213,11 @@ export function trimesterNumberToString(trimesterNumber: number): string {
 
 	return trimesterName;
 }
+
+export const getDeltaType = (trend: number): DeltaType => {
+	if (trend < -35) return 'decrease';
+	if (trend < 0) return 'moderateDecrease';
+	if (trend === 0) return 'unchanged';
+	if (trend < 30) return 'moderateIncrease';
+	return 'increase';
+};

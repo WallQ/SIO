@@ -2,23 +2,13 @@
 
 import { useCompanyStore } from '@/stores/companies';
 import { api } from '@/trpc/react';
-import { ListFilterIcon } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+import StatCard from './_components/analytics/stat-card';
+import TotalSalesRevenueByCountry from './_components/analytics/total-sales-revenue-by-country';
 import TotalSalesRevenueByCustomer from './_components/analytics/total-sales-revenue-by-customer';
 import TotalSalesRevenueByProduct from './_components/analytics/total-sales-revenue-by-product';
-import TotalSalesRevenueByRegion from './_components/analytics/total-sales-revenue-by-region';
 import TotalSalesRevenueByTrimester from './_components/analytics/total-sales-revenue-by-trimester';
 import TotalSalesRevenueByYear from './_components/analytics/total-sales-revenue-by-year';
 
@@ -30,6 +20,35 @@ export default function Dashboard() {
 			companyId: selectedCompany ? selectedCompany.id : 0,
 			year: 2023,
 		});
+
+	const totalSalesRevenueThisTrimester =
+		api.overview.totalSalesRevenueThisTrimester.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+		});
+
+	const totalSalesRevenueThisMonth =
+		api.overview.totalSalesRevenueThisMonth.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+		});
+
+	const totalSalesRevenueThisDay =
+		api.overview.totalSalesRevenueThisDay.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+		});
+
+	const totalSalesRevenueThisWeek =
+		api.overview.totalSalesRevenueThisWeek.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+		});
+
+	const averageSaleRevenuePerSale =
+		api.overview.averageSaleRevenuePerSale.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+		});
+
+	const totalCustomers = api.overview.totalCustomers.useQuery({
+		companyId: selectedCompany ? selectedCompany.id : 0,
+	});
 
 	const totalSalesRevenueByProduct =
 		api.overview.totalSalesRevenueByProduct.useQuery({
@@ -57,7 +76,7 @@ export default function Dashboard() {
 
 	return (
 		<main className='flex w-full flex-1 flex-col items-start justify-between gap-4 p-4 sm:px-6 sm:py-0'>
-			<div className='grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
+			<div className='grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
 				{totalSalesRevenueByYear.isLoading ? (
 					<div>Loading...</div>
 				) : totalSalesRevenueByYear.isError ? (
@@ -67,21 +86,83 @@ export default function Dashboard() {
 						data={totalSalesRevenueByYear.data}
 					/>
 				) : null}
-				<div className='flex flex-col items-center justify-between border border-red-500'>
-					<div className='border border-blue-500'>Testing</div>
-					<div className='border border-green-500'>Testing</div>
+				<div className='flex flex-col items-center justify-between gap-4'>
+					{totalSalesRevenueThisTrimester.isLoading ? (
+						<div>Loading...</div>
+					) : totalSalesRevenueThisTrimester.isError ? (
+						<div>
+							Error:{' '}
+							{totalSalesRevenueThisTrimester.error.message}
+						</div>
+					) : totalSalesRevenueThisTrimester.data ? (
+						<StatCard
+							title='Total Sales Revenue This Trimester'
+							value={totalSalesRevenueThisTrimester.data.amount}
+						/>
+					) : null}
+					{totalSalesRevenueThisDay.isLoading ? (
+						<div>Loading...</div>
+					) : totalSalesRevenueThisDay.isError ? (
+						<div>
+							Error: {totalSalesRevenueThisDay.error.message}
+						</div>
+					) : totalSalesRevenueThisDay.data ? (
+						<StatCard
+							title='Total Sales Revenue This Day'
+							value={totalSalesRevenueThisDay.data.amount}
+						/>
+					) : null}
 				</div>
-				<div className='flex flex-col items-center justify-between border border-red-500'>
-					<div className='border border-blue-500'>Testing</div>
-					<div className='border border-green-500'>Testing</div>
+				<div className='flex flex-col items-center justify-between gap-4'>
+					{totalSalesRevenueThisMonth.isLoading ? (
+						<div>Loading...</div>
+					) : totalSalesRevenueThisMonth.isError ? (
+						<div>
+							Error: {totalSalesRevenueThisMonth.error.message}
+						</div>
+					) : totalSalesRevenueThisMonth.data ? (
+						<StatCard
+							title='Total Sales Revenue This Month'
+							value={totalSalesRevenueThisMonth.data.amount}
+						/>
+					) : null}
+					{averageSaleRevenuePerSale.isLoading ? (
+						<div>Loading...</div>
+					) : averageSaleRevenuePerSale.isError ? (
+						<div>
+							Error: {averageSaleRevenuePerSale.error.message}
+						</div>
+					) : averageSaleRevenuePerSale.data ? (
+						<StatCard
+							title='Average Sale Revenue Per Sale'
+							value={averageSaleRevenuePerSale.data.amount}
+						/>
+					) : null}
 				</div>
-				<div className='flex flex-col items-center justify-between border border-red-500'>
-					<div className='border border-blue-500'>Testing</div>
-					<div className='border border-green-500'>Testing</div>
-				</div>
-				<div className='flex flex-col items-center justify-between border border-red-500'>
-					<div className='border border-blue-500'>Testing</div>
-					<div className='border border-green-500'>Testing</div>
+				<div className='flex flex-col items-center justify-between gap-4'>
+					{totalSalesRevenueThisWeek.isLoading ? (
+						<div>Loading...</div>
+					) : totalSalesRevenueThisWeek.isError ? (
+						<div>
+							Error: {totalSalesRevenueThisWeek.error.message}
+						</div>
+					) : totalSalesRevenueThisWeek.data ? (
+						<StatCard
+							title='Total Sales Revenue This Week'
+							value={totalSalesRevenueThisWeek.data.amount}
+						/>
+					) : null}
+					{totalCustomers.isLoading ? (
+						<div>Loading...</div>
+					) : totalCustomers.isError ? (
+						<div>Error: {totalCustomers.error.message}</div>
+					) : totalCustomers.data ? (
+						<StatCard
+							title='Total Customers'
+							value={totalCustomers.data.total}
+							currency={false}
+						/>
+					) : null}
 				</div>
 			</div>
 			<div className='grid w-full gap-4 lg:grid-cols-7'>
@@ -110,92 +191,58 @@ export default function Dashboard() {
 				) : totalSalesRevenueByCity.data ? (
 					<Card className='lg:col-span-5'>
 						<CardHeader>
-							<CardTitle>Total Sales Revenue By Region</CardTitle>
+							<CardTitle>
+								Total Sales Revenue By Country
+							</CardTitle>
 						</CardHeader>
 						<CardContent className='relative h-96 overflow-x-hidden overflow-y-hidden'>
-							<TotalSalesRevenueByRegion
+							<TotalSalesRevenueByCountry
 								data={totalSalesRevenueByCity.data}
 							/>
 						</CardContent>
 					</Card>
 				) : null}
 			</div>
-			<Tabs defaultValue='year' className='w-full'>
-				<div className='flex items-center'>
-					<TabsList>
-						<TabsTrigger value='week'>Week</TabsTrigger>
-						<TabsTrigger value='month'>Month</TabsTrigger>
-						<TabsTrigger value='year'>Year</TabsTrigger>
-					</TabsList>
-					<div className='ml-auto flex items-center gap-2'>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button size='sm' variant='outline'>
-									<ListFilterIcon className='mr-2 size-4' />
-									Filter
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align='end'>
-								<DropdownMenuLabel>Filter by</DropdownMenuLabel>
-								<DropdownMenuSeparator />
-								<DropdownMenuCheckboxItem>
-									Year
-								</DropdownMenuCheckboxItem>
-								<DropdownMenuCheckboxItem>
-									Month
-								</DropdownMenuCheckboxItem>
-								<DropdownMenuCheckboxItem>
-									Week
-								</DropdownMenuCheckboxItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
+			<div className='grid w-full gap-4 lg:grid-cols-7'>
+				{totalSalesRevenueByTrimester.isLoading ? (
+					<div>Loading...</div>
+				) : totalSalesRevenueByTrimester.isError ? (
+					<div>
+						Error: {totalSalesRevenueByTrimester.error.message}
 					</div>
-				</div>
-				<TabsContent value='year'>
-					<div className='grid gap-4 lg:grid-cols-7'>
-						{totalSalesRevenueByTrimester.isLoading ? (
-							<div>Loading...</div>
-						) : totalSalesRevenueByTrimester.isError ? (
-							<div>
-								Error:{' '}
-								{totalSalesRevenueByTrimester.error.message}
-							</div>
-						) : totalSalesRevenueByTrimester.data ? (
-							<Card className='lg:col-span-5'>
-								<CardHeader>
-									<CardTitle>
-										Total Sales Revenue By Trimester
-									</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<TotalSalesRevenueByTrimester
-										data={totalSalesRevenueByTrimester.data}
-									/>
-								</CardContent>
-							</Card>
-						) : null}
-						{totalSalesRevenueByCustomer.isLoading ? (
-							<div>Loading...</div>
-						) : totalSalesRevenueByCustomer.isError ? (
-							<div>
-								Error:{' '}
-								{totalSalesRevenueByCustomer.error.message}
-							</div>
-						) : totalSalesRevenueByCustomer.data ? (
-							<Card className='lg:col-span-2'>
-								<CardHeader>
-									<CardTitle>Customers By Revenue</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<TotalSalesRevenueByCustomer
-										data={totalSalesRevenueByCustomer.data}
-									/>{' '}
-								</CardContent>
-							</Card>
-						) : null}
+				) : totalSalesRevenueByTrimester.data ? (
+					<Card className='lg:col-span-5'>
+						<CardHeader>
+							<CardTitle>
+								Total Sales Revenue By Trimester
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<TotalSalesRevenueByTrimester
+								data={totalSalesRevenueByTrimester.data}
+							/>
+						</CardContent>
+					</Card>
+				) : null}
+				{totalSalesRevenueByCustomer.isLoading ? (
+					<div>Loading...</div>
+				) : totalSalesRevenueByCustomer.isError ? (
+					<div>
+						Error: {totalSalesRevenueByCustomer.error.message}
 					</div>
-				</TabsContent>
-			</Tabs>
+				) : totalSalesRevenueByCustomer.data ? (
+					<Card className='lg:col-span-2'>
+						<CardHeader>
+							<CardTitle>Customers By Revenue</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<TotalSalesRevenueByCustomer
+								data={totalSalesRevenueByCustomer.data}
+							/>{' '}
+						</CardContent>
+					</Card>
+				) : null}
+			</div>
 		</main>
 	);
 }

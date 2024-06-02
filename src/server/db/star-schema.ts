@@ -92,6 +92,7 @@ export const salesFact = createTable(
 		tax_payable: doublePrecision('tax_payable').notNull(),
 		net_total: doublePrecision('net_total').notNull(),
 		gross_total: doublePrecision('gross_total').notNull(),
+		quantity: integer('quantity').notNull(),
 		company_id: integer('company_id')
 			.notNull()
 			.references(() => companyDimension.id, {

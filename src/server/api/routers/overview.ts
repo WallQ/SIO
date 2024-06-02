@@ -1,20 +1,24 @@
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { customerDimension, geoDimension, productDimension, salesFact, timeDimension } from '@/server/db/star-schema';
+import {
+	customerDimension,
+	geoDimension,
+	productDimension,
+	salesFact,
+	timeDimension,
+} from '@/server/db/star-schema';
+import { getDate, getMonth, getQuarter, getWeek, getYear } from 'date-fns';
 import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
-
-
 import { monthNumberToString, trimesterNumberToString } from '@/lib/utils';
-
-
-
-
 
 export const overviewRouter = createTRPCRouter({
 	totalSalesRevenueByYear: protectedProcedure
 		.input(
-			z.object({ companyId: z.number(), year: z.number().default(2023) }),
+			z.object({
+				companyId: z.number(),
+				year: z.number().optional().default(2023),
+			}),
 		)
 		.query(async ({ input, ctx }) => {
 			const monthlySales = await ctx.db.star
@@ -60,9 +64,178 @@ export const overviewRouter = createTRPCRouter({
 			};
 		}),
 
+	totalSalesRevenueThisTrimester: protectedProcedure
+		.input(
+			z.object({
+				companyId: z.number(),
+				today: z.date().optional().default(new Date()),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			return await ctx.db.star
+				.select({
+					amount: sql<number>`SUM(${salesFact.gross_total})`.as(
+						'amount',
+					),
+				})
+				.from(salesFact)
+				.innerJoin(
+					timeDimension,
+					eq(timeDimension.id, salesFact.time_id),
+				)
+				.where(
+					eq(timeDimension.year, getYear(input.today) - 1) &&
+						eq(timeDimension.quarter, getQuarter(input.today)) &&
+						eq(salesFact.company_id, input.companyId),
+				)
+				.groupBy(timeDimension.quarter)
+				.then((rows) => rows[0]);
+		}),
+
+	totalSalesRevenueThisMonth: protectedProcedure
+		.input(
+			z.object({
+				companyId: z.number(),
+				today: z.date().optional().default(new Date()),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			return await ctx.db.star
+				.select({
+					amount: sql<number>`SUM(${salesFact.gross_total})`.as(
+						'amount',
+					),
+				})
+				.from(salesFact)
+				.innerJoin(
+					timeDimension,
+					eq(timeDimension.id, salesFact.time_id),
+				)
+				.where(
+					eq(timeDimension.year, getYear(input.today) - 1) &&
+						eq(timeDimension.month, getMonth(input.today) + 1) &&
+						eq(salesFact.company_id, input.companyId),
+				)
+				.groupBy(timeDimension.month)
+				.then((rows) => rows[0]);
+		}),
+
+	totalSalesRevenueThisWeek: protectedProcedure
+		.input(
+			z.object({
+				companyId: z.number(),
+				today: z.date().optional().default(new Date()),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			return await ctx.db.star
+				.select({
+					amount: sql<number>`SUM(${salesFact.gross_total})`.as(
+						'amount',
+					),
+				})
+				.from(salesFact)
+				.innerJoin(
+					timeDimension,
+					eq(timeDimension.id, salesFact.time_id),
+				)
+				.where(
+					eq(timeDimension.year, getYear(input.today) - 1) &&
+						eq(timeDimension.week, getWeek(input.today)) &&
+						eq(salesFact.company_id, input.companyId),
+				)
+				.groupBy(timeDimension.week)
+				.then((rows) => rows[0]);
+		}),
+
+	totalSalesRevenueThisDay: protectedProcedure
+		.input(
+			z.object({
+				companyId: z.number(),
+				today: z.date().optional().default(new Date()),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			return await ctx.db.star
+				.select({
+					amount: sql<number>`SUM(${salesFact.gross_total})`.as(
+						'amount',
+					),
+				})
+				.from(salesFact)
+				.innerJoin(
+					timeDimension,
+					eq(timeDimension.id, salesFact.time_id),
+				)
+				.where(
+					eq(timeDimension.year, getYear(input.today) - 1) &&
+						eq(timeDimension.day, getDate(input.today)) &&
+						eq(salesFact.company_id, input.companyId),
+				)
+				.groupBy(timeDimension.day)
+				.then((rows) => rows[0]);
+		}),
+
+	averageSaleRevenuePerSale: protectedProcedure
+		.input(
+			z.object({
+				companyId: z.number(),
+				today: z.date().optional().default(new Date()),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			return await ctx.db.star
+				.select({
+					amount: sql<number>`AVG(${salesFact.gross_total}/${salesFact.quantity})`.as(
+						'amount',
+					),
+				})
+				.from(salesFact)
+				.innerJoin(
+					timeDimension,
+					eq(timeDimension.id, salesFact.time_id),
+				)
+				.where(
+					eq(timeDimension.quarter, getQuarter(input.today)) &&
+						eq(timeDimension.month, getMonth(input.today) + 1) &&
+						eq(timeDimension.week, getWeek(input.today)) &&
+						eq(salesFact.company_id, input.companyId),
+				)
+				.then((rows) => rows[0]);
+		}),
+
+	totalCustomers: protectedProcedure
+		.input(
+			z.object({
+				companyId: z.number(),
+				year: z.number().optional().default(2023),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			return await ctx.db.star
+				.select({
+					total: sql<number>`COUNT(DISTINCT ${customerDimension.id})`.as(
+						'total',
+					),
+				})
+				.from(salesFact)
+				.innerJoin(
+					customerDimension,
+					eq(customerDimension.id, salesFact.customer_id),
+				)
+				.where(
+					eq(timeDimension.year, getYear(input.year)) &&
+						eq(salesFact.company_id, input.companyId),
+				)
+				.then((rows) => rows[0]);
+		}),
+
 	totalSalesRevenueByProduct: protectedProcedure
 		.input(
-			z.object({ companyId: z.number(), year: z.number().default(2023) }),
+			z.object({
+				companyId: z.number(),
+				year: z.number().optional().default(2023),
+			}),
 		)
 		.query(async ({ input, ctx }) => {
 			const productSales = await ctx.db.star
@@ -97,7 +270,10 @@ export const overviewRouter = createTRPCRouter({
 
 	totalSalesRevenueByCity: protectedProcedure
 		.input(
-			z.object({ companyId: z.number(), year: z.number().default(2023) }),
+			z.object({
+				companyId: z.number(),
+				year: z.number().optional().default(2023),
+			}),
 		)
 		.query(async ({ input, ctx }) => {
 			const countrySales = await ctx.db.star
@@ -129,7 +305,10 @@ export const overviewRouter = createTRPCRouter({
 
 	totalSalesRevenueByTrimester: protectedProcedure
 		.input(
-			z.object({ companyId: z.number(), year: z.number().default(2023) }),
+			z.object({
+				companyId: z.number(),
+				year: z.number().optional().default(2023),
+			}),
 		)
 		.query(async ({ input, ctx }) => {
 			const trimesterSales = await ctx.db.star
@@ -163,10 +342,13 @@ export const overviewRouter = createTRPCRouter({
 
 	totalSalesRevenueByCustomer: protectedProcedure
 		.input(
-			z.object({ companyId: z.number(), year: z.number().default(2023) }),
+			z.object({
+				companyId: z.number(),
+				year: z.number().optional().default(2023),
+			}),
 		)
-		.query(({ input, ctx }) => {
-			return ctx.db.star
+		.query(async ({ input, ctx }) => {
+			return await ctx.db.star
 				.select({
 					name: customerDimension.name,
 					amount: sql<number>`SUM(${salesFact.gross_total})`.as(

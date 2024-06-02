@@ -20,16 +20,15 @@ export const options = {
 	defaultColor: '#ffffff',
 };
 
-type TotalSalesRevenueByRegionProps = {
+type TotalSalesRevenueByCountryProps = {
 	data: {
 		sales_by_city: (string | number)[][];
 	};
 };
 
-const TotalSalesRevenueByRegion: React.FunctionComponent<
-	TotalSalesRevenueByRegionProps
+const TotalSalesRevenueByCountry: React.FunctionComponent<
+	TotalSalesRevenueByCountryProps
 > = ({ data }): React.ReactNode => {
-	console.log(data.sales_by_city);
 	return (
 		<Chart
 			chartType='GeoChart'
@@ -40,4 +39,4 @@ const TotalSalesRevenueByRegion: React.FunctionComponent<
 	);
 };
 
-export default TotalSalesRevenueByRegion;
+export default TotalSalesRevenueByCountry;

@@ -2,7 +2,6 @@
 
 import { AreaChart, BadgeDelta, type DeltaType } from '@tremor/react';
 
-import { formatCurrency } from '@/lib/utils';
 import {
 	Card,
 	CardContent,
@@ -16,6 +15,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { formatCurrency } from '@/lib/utils';
 
 type TotalSalesRevenueProps = {
 	data: {
@@ -38,7 +38,7 @@ const TotalSalesRevenueByYear: React.FunctionComponent<
 		return 'increase';
 	};
 	return (
-		<Card x-chunk='dashboard-05-chunk-2'>
+		<Card>
 			<CardHeader className='pb-2'>
 				<div className='flex items-center justify-between'>
 					<CardDescription>

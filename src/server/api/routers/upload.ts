@@ -236,6 +236,8 @@ export const uploadRouter = createTRPCRouter({
 				.from(companies)
 				.innerJoin(addresses, eq(companies.address_id, addresses.id));
 
+			await ctx.db.star.delete(salesFact);
+
 			const parsedCompaniesDim: (typeof companyDimension.$inferInsert)[] =
 				selectedCompany.map((company) => ({
 					id: company.id,
@@ -383,6 +385,9 @@ export const uploadRouter = createTRPCRouter({
 						sql<number>`SUM(${lines.amount} + (${lines.amount} * (${lines.tax_percentage} * 0.01)))`.as(
 							'gross_total',
 						),
+					quantity: sql<number>`SUM(${lines.quantity})`.as(
+						'quantity',
+					),
 				})
 				.from(invoices)
 				.innerJoin(lines, eq(lines.invoice_id, invoices.id))
@@ -416,6 +421,7 @@ export const uploadRouter = createTRPCRouter({
 						tax_payable: sale.tax_payable,
 						net_total: sale.net_total,
 						gross_total: sale.gross_total,
+						quantity: sale.quantity,
 						geo_id: geo.id,
 						time_id: time.id,
 						company_id: sale.company_id,
