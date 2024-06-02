@@ -10,7 +10,11 @@ import { getDate, getMonth, getQuarter, getWeek, getYear } from 'date-fns';
 import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
-import { monthNumberToString, trimesterNumberToString } from '@/lib/utils';
+import {
+	formatNumber,
+	monthNumberToString,
+	trimesterNumberToString,
+} from '@/lib/utils';
 
 export const overviewRouter = createTRPCRouter({
 	totalSalesRevenueByYear: protectedProcedure
@@ -260,7 +264,11 @@ export const overviewRouter = createTRPCRouter({
 
 			const formattedProductSales = productSales.map((product) => ({
 				name: product.name,
-				value: parseFloat(product.value.toFixed(2)),
+				value: parseFloat(
+					formatNumber(product.value, false, true)
+						.replace(/\s/g, '')
+						.replace(',', '.'),
+				).toFixed(2),
 			}));
 
 			return {

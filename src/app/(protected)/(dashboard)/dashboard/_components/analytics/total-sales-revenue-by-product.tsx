@@ -16,7 +16,7 @@ const TotalSalesRevenueByProduct: React.FunctionComponent<
 		<div className='flex flex-col gap-4'>
 			<p className='flex w-full items-center justify-between text-sm text-muted-foreground'>
 				<span>Product</span>
-				<span>Amount</span>
+				<span>Amount (€)</span>
 			</p>
 			<BarList
 				data={data.sales_by_product}
