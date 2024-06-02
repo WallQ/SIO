@@ -76,9 +76,9 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 						variant='outline'
 						role='combobox'
 						aria-expanded={openPopover}
-						className='w-[192px] justify-between'>
+						className='w-64 gap-x-2'>
 						{selectedCompany ? (
-							<Avatar className='mr-2 h-5 w-5'>
+							<Avatar className='h-5 w-5'>
 								<AvatarImage
 									src={`https://source.boringavatars.com/beam/128/${selectedCompany.name}?colors=fafafa,f4f4f5,e4e4e7,d4d4d8,a1a1aa,71717a,52525b,3f3f46,27272a,18181b,09090b`}
 									alt='Company logo'
@@ -94,7 +94,7 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 						<ChevronsUpDown className='ml-auto size-4 shrink-0 opacity-50' />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className='w-[192px] p-0'>
+				<PopoverContent className='w-64 p-0'>
 					<Command>
 						<CommandInput placeholder='Search company...' />
 						<CommandList>

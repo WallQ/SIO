@@ -236,6 +236,8 @@ export const uploadRouter = createTRPCRouter({
 				.from(companies)
 				.innerJoin(addresses, eq(companies.address_id, addresses.id));
 
+			await ctx.db.star.delete(salesFact);
+
 			const parsedCompaniesDim: (typeof companyDimension.$inferInsert)[] =
 				selectedCompany.map((company) => ({
 					id: company.id,
@@ -350,7 +352,7 @@ export const uploadRouter = createTRPCRouter({
 				parsedTimeDim.add({
 					date: invoice.date,
 					year: getYear(invoice.date),
-					month: getMonth(invoice.date),
+					month: getMonth(invoice.date) + 1,
 					day: getDate(invoice.date),
 					day_of_week: getDay(invoice.date),
 					week: getWeek(invoice.date),
@@ -383,6 +385,9 @@ export const uploadRouter = createTRPCRouter({
 						sql<number>`SUM(${lines.amount} + (${lines.amount} * (${lines.tax_percentage} * 0.01)))`.as(
 							'gross_total',
 						),
+					quantity: sql<number>`SUM(${lines.quantity})`.as(
+						'quantity',
+					),
 				})
 				.from(invoices)
 				.innerJoin(lines, eq(lines.invoice_id, invoices.id))
@@ -407,18 +412,16 @@ export const uploadRouter = createTRPCRouter({
 					);
 					if (!geo) throw new Error('Geo id not found!');
 
-					console.log('Time to find -> ', sale.date);
-					console.log('Times to search -> ', insertedTimeDim);
 					const time = insertedTimeDim.find(
 						(t) => formatISO(t.date) === formatISO(sale.date),
 					);
 					if (!time) throw new Error('Time id not found!');
-					console.log('Time found -> ', time);
 
 					return {
 						tax_payable: sale.tax_payable,
 						net_total: sale.net_total,
 						gross_total: sale.gross_total,
+						quantity: sale.quantity,
 						geo_id: geo.id,
 						time_id: time.id,
 						company_id: sale.company_id,

@@ -1,10 +1,12 @@
-import { companies } from '@/server/db/relational-schema';
+import { type companyDimension } from '@/server/db/star-schema';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 type CompanyStore = {
-	selectedCompany: typeof companies | null;
-	setSelectedCompany: (selectedCompany: Company) => void;
+	selectedCompany: typeof companyDimension.$inferSelect | null;
+	setSelectedCompany: (
+		selectedCompany: typeof companyDimension.$inferSelect,
+	) => void;
 };
 
 export const useCompanyStore = create<CompanyStore>()(

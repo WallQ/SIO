@@ -4,26 +4,10 @@ import {
 	geoDimension,
 	productDimension,
 	salesFact,
-	timeDimension,
 } from '@/server/db/star-schema';
 import { and, eq, sql } from 'drizzle-orm';
 
 export const analyticsRouter = createTRPCRouter({
-	totalSalesRevenueByYear: protectedProcedure.query(({ ctx }) => {
-		return ctx.db.star
-			.select({
-				month: sql<string>`DATE_TRUNC('month', ${timeDimension.date})`.as(
-					'month',
-				),
-				amount: sql<number>`SUM(${salesFact.gross_total})`.as('amount'),
-			})
-			.from(salesFact)
-			.innerJoin(timeDimension, eq(salesFact.time_id, timeDimension.id))
-			.where(eq(timeDimension.year, 2023))
-			.groupBy(timeDimension.date)
-			.orderBy(timeDimension.date);
-	}),
-
 	totalCustomers: protectedProcedure.query(({ ctx }) => {
 		return ctx.db.star
 			.select({
@@ -70,22 +54,6 @@ export const analyticsRouter = createTRPCRouter({
 				),
 			)
 			.groupBy(geoDimension.city)
-			.orderBy(sql<number>`SUM(${salesFact.gross_total}) DESC`)
-			.limit(5);
-	}),
-
-	customersByRevenue: protectedProcedure.query(({ ctx }) => {
-		return ctx.db.star
-			.select({
-				name: customerDimension.name,
-				amount: sql<number>`SUM(${salesFact.gross_total})`.as('amount'),
-			})
-			.from(salesFact)
-			.innerJoin(
-				customerDimension,
-				eq(salesFact.customer_id, customerDimension.id),
-			)
-			.groupBy(customerDimension.name)
 			.orderBy(sql<number>`SUM(${salesFact.gross_total}) DESC`)
 			.limit(5);
 	}),
