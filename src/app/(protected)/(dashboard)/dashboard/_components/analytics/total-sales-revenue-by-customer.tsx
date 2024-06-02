@@ -13,7 +13,7 @@ type CustomersByRevenueProps = {
 	}[];
 };
 
-const CustomersByRevenue: React.FunctionComponent<CustomersByRevenueProps> = ({
+const TotalSalesRevenueByCustomer: React.FunctionComponent<CustomersByRevenueProps> = ({
 	data,
 }): React.ReactNode => {
 	return (
@@ -67,4 +67,4 @@ const CustomersByRevenue: React.FunctionComponent<CustomersByRevenueProps> = ({
 	);
 };
 
-export default CustomersByRevenue;
+export default TotalSalesRevenueByCustomer;

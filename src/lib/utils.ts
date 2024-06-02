@@ -95,9 +95,6 @@ export function getBaseUrl() {
 	}
 }
 
-export const ensureArray = <T>(value: T | T[]): T[] =>
-	Array.isArray(value) ? value : [value];
-
 export const transformXML = (parsedXML: SAFT) => {
 	const { AuditFile } = parsedXML;
 	const { Header, MasterFiles, SourceDocuments } = AuditFile;

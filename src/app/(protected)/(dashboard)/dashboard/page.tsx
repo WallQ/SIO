@@ -16,9 +16,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import CustomersByRevenue from './_components/analytics/customers-by-revenue';
+import TotalSalesRevenueByCustomer from './_components/analytics/total-sales-revenue-by-customer';
+import TotalSalesRevenueByProduct from './_components/analytics/total-sales-revenue-by-product';
+import TotalSalesRevenueByRegion from './_components/analytics/total-sales-revenue-by-region';
+import TotalSalesRevenueByTrimester from './_components/analytics/total-sales-revenue-by-trimester';
 import TotalSalesRevenueByYear from './_components/analytics/total-sales-revenue-by-year';
-import Overview from './_components/overview';
 
 export default function Dashboard() {
 	const selectedCompany = useCompanyStore((state) => state.selectedCompany);
@@ -29,72 +31,32 @@ export default function Dashboard() {
 			year: 2023,
 		});
 
+	const totalSalesRevenueByProduct =
+		api.overview.totalSalesRevenueByProduct.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+			year: 2023,
+		});
+
+	const totalSalesRevenueByCity =
+		api.overview.totalSalesRevenueByCity.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+			year: 2023,
+		});
+
 	const totalSalesRevenueByTrimester =
 		api.overview.totalSalesRevenueByTrimester.useQuery({
 			companyId: selectedCompany ? selectedCompany.id : 0,
 			year: 2023,
 		});
 
-	const customersByRevenue = api.overview.customersByRevenue.useQuery({
-		companyId: selectedCompany ? selectedCompany.id : 0,
-		year: 2023,
-	});
+	const totalSalesRevenueByCustomer =
+		api.overview.totalSalesRevenueByCustomer.useQuery({
+			companyId: selectedCompany ? selectedCompany.id : 0,
+			year: 2023,
+		});
 
 	return (
 		<main className='flex w-full flex-1 flex-col items-start justify-between gap-4 p-4 sm:px-6 sm:py-0'>
-			<div className='grid w-full grid-cols-4 gap-8'>
-				{/* {productsByRevenue ? (
-					<table className='border border-red-500'>
-						<thead>
-							<tr>
-								<th>Product</th>
-								<th>Quantity</th>
-								<th>Amount</th>
-							</tr>
-						</thead>
-						<tbody>
-							{productsByRevenue.map((item, index) => (
-								<tr
-									key={`${index}-${item.amount}-${item.product}`}>
-									<td>{item.product}</td>
-									<td>{item.quantity}</td>
-									<td>{formatCurrency(item.amount)}</td>
-								</tr>
-							))}
-						</tbody>
-						<tfoot>
-							<tr>
-								<td>Total Revenue by Product</td>
-							</tr>
-						</tfoot>
-					</table>
-				) : null}
-				{citiesByRevenue ? (
-					<table className='border border-red-500'>
-						<thead>
-							<tr>
-								<th>City</th>
-								<th>Amount</th>
-							</tr>
-						</thead>
-						<tbody>
-							{citiesByRevenue.map((item, index) => (
-								<tr
-									key={`${index}-${item.amount}-${item.city}`}>
-									<td>{item.city}</td>
-									<td>{formatCurrency(item.amount)}</td>
-								</tr>
-							))}
-						</tbody>
-						<tfoot>
-							<tr>
-								<td>Total Revenue by City</td>
-							</tr>
-						</tfoot>
-					</table>
-				) : null}
-				*/}
-			</div>
 			<div className='grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
 				{totalSalesRevenueByYear.isLoading ? (
 					<div>Loading...</div>
@@ -105,8 +67,60 @@ export default function Dashboard() {
 						data={totalSalesRevenueByYear.data}
 					/>
 				) : null}
+				<div className='flex flex-col items-center justify-between border border-red-500'>
+					<div className='border border-blue-500'>Testing</div>
+					<div className='border border-green-500'>Testing</div>
+				</div>
+				<div className='flex flex-col items-center justify-between border border-red-500'>
+					<div className='border border-blue-500'>Testing</div>
+					<div className='border border-green-500'>Testing</div>
+				</div>
+				<div className='flex flex-col items-center justify-between border border-red-500'>
+					<div className='border border-blue-500'>Testing</div>
+					<div className='border border-green-500'>Testing</div>
+				</div>
+				<div className='flex flex-col items-center justify-between border border-red-500'>
+					<div className='border border-blue-500'>Testing</div>
+					<div className='border border-green-500'>Testing</div>
+				</div>
 			</div>
-			<Tabs defaultValue='month' className='w-full'>
+			<div className='grid w-full gap-4 lg:grid-cols-7'>
+				{totalSalesRevenueByProduct.isLoading ? (
+					<div>Loading...</div>
+				) : totalSalesRevenueByProduct.isError ? (
+					<div>Error: {totalSalesRevenueByProduct.error.message}</div>
+				) : totalSalesRevenueByProduct.data ? (
+					<Card className='lg:col-span-2'>
+						<CardHeader>
+							<CardTitle>
+								Total Sales Revenue By Product
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<TotalSalesRevenueByProduct
+								data={totalSalesRevenueByProduct.data}
+							/>
+						</CardContent>
+					</Card>
+				) : null}
+				{totalSalesRevenueByCity.isLoading ? (
+					<div>Loading...</div>
+				) : totalSalesRevenueByCity.isError ? (
+					<div>Error: {totalSalesRevenueByCity.error.message}</div>
+				) : totalSalesRevenueByCity.data ? (
+					<Card className='lg:col-span-5'>
+						<CardHeader>
+							<CardTitle>Total Sales Revenue By Region</CardTitle>
+						</CardHeader>
+						<CardContent className='relative h-96 overflow-x-hidden overflow-y-hidden'>
+							<TotalSalesRevenueByRegion
+								data={totalSalesRevenueByCity.data}
+							/>
+						</CardContent>
+					</Card>
+				) : null}
+			</div>
+			<Tabs defaultValue='year' className='w-full'>
 				<div className='flex items-center'>
 					<TabsList>
 						<TabsTrigger value='week'>Week</TabsTrigger>
@@ -137,44 +151,44 @@ export default function Dashboard() {
 						</DropdownMenu>
 					</div>
 				</div>
-				<TabsContent value='month'>
+				<TabsContent value='year'>
 					<div className='grid gap-4 lg:grid-cols-7'>
-						<Card className='lg:col-span-5'>
-							<CardHeader>
-								<CardTitle>
-									Total Sales Revenue Per Trimester
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
-								{totalSalesRevenueByTrimester.isLoading ? (
-									<div>Loading...</div>
-								) : totalSalesRevenueByTrimester.isError ? (
-									<div>
-										Error:{' '}
-										{
-											totalSalesRevenueByTrimester.error
-												.message
-										}
-									</div>
-								) : totalSalesRevenueByTrimester.data ? (
-									<Overview
-										data={totalSalesRevenueByTrimester.data}
-									/>
-								) : null}
-							</CardContent>
-						</Card>
-						{customersByRevenue.isLoading ? (
+						{totalSalesRevenueByTrimester.isLoading ? (
 							<div>Loading...</div>
-						) : customersByRevenue.isError ? (
-							<div>Error: {customersByRevenue.error.message}</div>
-						) : customersByRevenue.data ? (
-							<Card className='lg:col-span-2'>
+						) : totalSalesRevenueByTrimester.isError ? (
+							<div>
+								Error:{' '}
+								{totalSalesRevenueByTrimester.error.message}
+							</div>
+						) : totalSalesRevenueByTrimester.data ? (
+							<Card className='lg:col-span-5'>
 								<CardHeader>
-									<CardTitle>Customers by Revenue</CardTitle>
+									<CardTitle>
+										Total Sales Revenue By Trimester
+									</CardTitle>
 								</CardHeader>
 								<CardContent>
-									<CustomersByRevenue
-										data={customersByRevenue.data}
+									<TotalSalesRevenueByTrimester
+										data={totalSalesRevenueByTrimester.data}
+									/>
+								</CardContent>
+							</Card>
+						) : null}
+						{totalSalesRevenueByCustomer.isLoading ? (
+							<div>Loading...</div>
+						) : totalSalesRevenueByCustomer.isError ? (
+							<div>
+								Error:{' '}
+								{totalSalesRevenueByCustomer.error.message}
+							</div>
+						) : totalSalesRevenueByCustomer.data ? (
+							<Card className='lg:col-span-2'>
+								<CardHeader>
+									<CardTitle>Customers By Revenue</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<TotalSalesRevenueByCustomer
+										data={totalSalesRevenueByCustomer.data}
 									/>{' '}
 								</CardContent>
 							</Card>

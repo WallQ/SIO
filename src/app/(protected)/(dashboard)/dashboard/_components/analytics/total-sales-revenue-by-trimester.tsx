@@ -4,40 +4,24 @@ import { BarChart } from '@tremor/react';
 
 import { formatCurrency } from '@/lib/utils';
 
-const chartdata = [
-	{
-		trimester: 'Q1',
-		amount: 100,
-	},
-	{
-		trimester: 'Q2',
-		amount: 1000,
-	},
-	{
-		trimester: 'Q3',
-		amount: 10000,
-	},
-	{
-		trimester: 'Q4',
-		amount: 100000,
-	},
-];
-type OverviewProps = {
+type TotalSalesRevenueByTrimesterProps = {
 	data: {
-		trimester: number;
-		amount: number;
-	}[];
+		sales_by_trimester: {
+			trimester: string;
+			amount: number;
+		}[];
+	};
 };
 
 const TotalSalesRevenueByTrimester: React.FunctionComponent<
-	OverviewProps
-> = ({}): React.ReactNode => {
+	TotalSalesRevenueByTrimesterProps
+> = ({ data }): React.ReactNode => {
 	return (
 		<BarChart
-			data={chartdata}
+			data={data.sales_by_trimester}
 			index='trimester'
 			categories={['amount']}
-			colors={['cyan']}
+			colors={['blue']}
 			valueFormatter={(v: number) => formatCurrency(v, false, false)}
 			yAxisWidth={48}
 			showAnimation={true}

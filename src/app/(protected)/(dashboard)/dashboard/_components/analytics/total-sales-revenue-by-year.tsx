@@ -27,9 +27,9 @@ type TotalSalesRevenueProps = {
 	};
 };
 
-const TotalSalesRevenueByYear: React.FunctionComponent<TotalSalesRevenueProps> = ({
-	data,
-}): React.ReactNode => {
+const TotalSalesRevenueByYear: React.FunctionComponent<
+	TotalSalesRevenueProps
+> = ({ data }): React.ReactNode => {
 	const getDeltaType = (trend: number): DeltaType => {
 		if (trend < -35) return 'decrease';
 		if (trend < 0) return 'moderateDecrease';
@@ -42,7 +42,7 @@ const TotalSalesRevenueByYear: React.FunctionComponent<TotalSalesRevenueProps> =
 			<CardHeader className='pb-2'>
 				<div className='flex items-center justify-between'>
 					<CardDescription>
-						Yearly Total Sales Revenue
+						Total Sales Revenue By Year
 					</CardDescription>
 					<TooltipProvider>
 						<Tooltip>
@@ -66,7 +66,7 @@ const TotalSalesRevenueByYear: React.FunctionComponent<TotalSalesRevenueProps> =
 					data={data.sales_by_month}
 					index='month'
 					categories={['amount']}
-					colors={['teal']}
+					colors={['purple']}
 					valueFormatter={(v: number) =>
 						formatCurrency(v, false, false)
 					}
