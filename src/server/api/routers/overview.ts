@@ -265,10 +265,12 @@ export const overviewRouter = createTRPCRouter({
 			const formattedProductSales = productSales.map((product) => ({
 				name: product.name,
 				value: parseFloat(
-					formatNumber(product.value, false, true)
-						.replace(/\s/g, '')
-						.replace(',', '.'),
-				).toFixed(2),
+					parseFloat(
+						formatNumber(product.value, false, true)
+							.replace(/\s/g, '')
+							.replace(',', '.'),
+					).toFixed(2),
+				),
 			}));
 
 			return {
