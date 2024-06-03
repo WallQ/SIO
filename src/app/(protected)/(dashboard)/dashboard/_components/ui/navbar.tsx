@@ -33,6 +33,7 @@ import { Icons } from '@/components/icons';
 
 import { navigationItems } from '../../_data/navigation';
 import CompanySwitcher from './company-switcher';
+import YearSwitcher from './year-switcher';
 
 const Navbar = () => {
 	const paths = usePathname();
@@ -84,6 +85,9 @@ const Navbar = () => {
 					</Sheet>
 					<div className='hidden sm:flex'>
 						<CompanySwitcher />
+					</div>
+					<div className='hidden sm:flex'>
+						<YearSwitcher />
 					</div>
 					<Breadcrumb className='flex'>
 						<BreadcrumbList>

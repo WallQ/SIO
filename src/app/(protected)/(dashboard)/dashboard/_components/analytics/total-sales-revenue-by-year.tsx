@@ -75,7 +75,7 @@ const TotalSalesRevenueByYear: React.FunctionComponent<
 					startEndOnly={true}
 					showGridLines={false}
 					showAnimation={true}
-					className='mt-4 h-40'
+					className='mt-4 h-20'
 				/>
 			</CardContent>
 		</Card>

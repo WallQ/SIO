@@ -18,7 +18,7 @@ const TotalSalesRevenueByCustomer: React.FunctionComponent<CustomersByRevenuePro
 }): React.ReactNode => {
 	return (
 		<div className='flex flex-col items-center gap-4'>
-			{data ? (
+			{/* {data ? (
 				<DonutChart
 					data={data}
 					index='name'
@@ -31,16 +31,16 @@ const TotalSalesRevenueByCustomer: React.FunctionComponent<CustomersByRevenuePro
 					showAnimation={true}
 					className='h-48'
 				/>
-			) : null}
-			<p className='flex w-full items-center justify-between text-sm text-muted-foreground'>
+			) : null} */}
+			<div className='flex w-full items-center justify-between text-sm text-muted-foreground'>
 				<span>Customer</span>
 				<span>Amount</span>
-			</p>
+			</div>
 			<List>
 				{data
 					? data.map((customer, index) => (
 							<ListItem key={`${index}-${customer.name}`}>
-								<div className='flex items-center space-x-2.5 truncate'>
+								<div className='flex items-center gap-x-2.5 truncate'>
 									<span
 										className={cn(
 											`bg-${colors[data.indexOf(customer)]}-500`,

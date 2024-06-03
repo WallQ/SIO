@@ -21,20 +21,20 @@ export default function Dashboard() {
 			year: 2023,
 		});
 
-	const totalSalesRevenueThisTrimester =
-		api.overview.totalSalesRevenueThisTrimester.useQuery({
-			companyId: selectedCompany ? selectedCompany.id : 0,
-		});
+	// const totalSalesRevenueThisTrimester =
+	// 	api.overview.totalSalesRevenueThisTrimester.useQuery({
+	// 		companyId: selectedCompany ? selectedCompany.id : 0,
+	// 	});
 
 	const totalSalesRevenueThisMonth =
 		api.overview.totalSalesRevenueThisMonth.useQuery({
 			companyId: selectedCompany ? selectedCompany.id : 0,
 		});
 
-	const totalSalesRevenueThisDay =
-		api.overview.totalSalesRevenueThisDay.useQuery({
-			companyId: selectedCompany ? selectedCompany.id : 0,
-		});
+	// const totalSalesRevenueThisDay =
+	// 	api.overview.totalSalesRevenueThisDay.useQuery({
+	// 		companyId: selectedCompany ? selectedCompany.id : 0,
+	// 	});
 
 	const totalSalesRevenueThisWeek =
 		api.overview.totalSalesRevenueThisWeek.useQuery({
@@ -46,9 +46,9 @@ export default function Dashboard() {
 			companyId: selectedCompany ? selectedCompany.id : 0,
 		});
 
-	const totalCustomers = api.overview.totalCustomers.useQuery({
-		companyId: selectedCompany ? selectedCompany.id : 0,
-	});
+	// const totalCustomers = api.overview.totalCustomers.useQuery({
+	// 	companyId: selectedCompany ? selectedCompany.id : 0,
+	// });
 
 	const totalSalesRevenueByProduct =
 		api.overview.totalSalesRevenueByProduct.useQuery({
@@ -75,8 +75,8 @@ export default function Dashboard() {
 		});
 
 	return (
-		<main className='flex w-full flex-1 flex-col items-start justify-between gap-4 p-4 sm:px-6 sm:py-0'>
-			<div className='grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+		<main className='flex w-full flex-1 flex-col items-start justify-between gap-2 p-4 sm:px-6 sm:py-0'>
+			<div className='grid w-full gap-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
 				{totalSalesRevenueByYear.isLoading ? (
 					<div>Loading...</div>
 				) : totalSalesRevenueByYear.isError ? (
@@ -86,33 +86,6 @@ export default function Dashboard() {
 						data={totalSalesRevenueByYear.data}
 					/>
 				) : null}
-				<div className='flex flex-col items-center justify-between gap-4'>
-					{totalSalesRevenueThisTrimester.isLoading ? (
-						<div>Loading...</div>
-					) : totalSalesRevenueThisTrimester.isError ? (
-						<div>
-							Error:{' '}
-							{totalSalesRevenueThisTrimester.error.message}
-						</div>
-					) : totalSalesRevenueThisTrimester.data ? (
-						<StatCard
-							title='Total Sales Revenue This Trimester'
-							value={totalSalesRevenueThisTrimester.data.amount}
-						/>
-					) : null}
-					{totalSalesRevenueThisDay.isLoading ? (
-						<div>Loading...</div>
-					) : totalSalesRevenueThisDay.isError ? (
-						<div>
-							Error: {totalSalesRevenueThisDay.error.message}
-						</div>
-					) : totalSalesRevenueThisDay.data ? (
-						<StatCard
-							title='Total Sales Revenue This Day'
-							value={totalSalesRevenueThisDay.data.amount}
-						/>
-					) : null}
-				</div>
 				<div className='flex flex-col items-center justify-between gap-4'>
 					{totalSalesRevenueThisMonth.isLoading ? (
 						<div>Loading...</div>
@@ -126,6 +99,8 @@ export default function Dashboard() {
 							value={totalSalesRevenueThisMonth.data.amount}
 						/>
 					) : null}
+				</div>
+				<div className='flex flex-col items-center justify-between gap-4'>
 					{averageSaleRevenuePerSale.isLoading ? (
 						<div>Loading...</div>
 					) : averageSaleRevenuePerSale.isError ? (
@@ -152,38 +127,9 @@ export default function Dashboard() {
 							value={totalSalesRevenueThisWeek.data.amount}
 						/>
 					) : null}
-					{totalCustomers.isLoading ? (
-						<div>Loading...</div>
-					) : totalCustomers.isError ? (
-						<div>Error: {totalCustomers.error.message}</div>
-					) : totalCustomers.data ? (
-						<StatCard
-							title='Total Customers'
-							value={totalCustomers.data.total}
-							currency={false}
-						/>
-					) : null}
 				</div>
 			</div>
-			<div className='grid w-full gap-4 lg:grid-cols-7'>
-				{totalSalesRevenueByProduct.isLoading ? (
-					<div>Loading...</div>
-				) : totalSalesRevenueByProduct.isError ? (
-					<div>Error: {totalSalesRevenueByProduct.error.message}</div>
-				) : totalSalesRevenueByProduct.data ? (
-					<Card className='lg:col-span-2'>
-						<CardHeader>
-							<CardTitle>
-								Total Sales Revenue By Product
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<TotalSalesRevenueByProduct
-								data={totalSalesRevenueByProduct.data}
-							/>
-						</CardContent>
-					</Card>
-				) : null}
+			{/* <div className='grid w-full gap-4 lg:grid-cols-7'>
 				{totalSalesRevenueByCity.isLoading ? (
 					<div>Loading...</div>
 				) : totalSalesRevenueByCity.isError ? (
@@ -202,8 +148,8 @@ export default function Dashboard() {
 						</CardContent>
 					</Card>
 				) : null}
-			</div>
-			<div className='grid w-full gap-4 lg:grid-cols-7'>
+			</div> */}
+			<div className='grid w-full gap-2 lg:grid-cols-7'>
 				{totalSalesRevenueByTrimester.isLoading ? (
 					<div>Loading...</div>
 				) : totalSalesRevenueByTrimester.isError ? (
@@ -224,24 +170,62 @@ export default function Dashboard() {
 						</CardContent>
 					</Card>
 				) : null}
-				{totalSalesRevenueByCustomer.isLoading ? (
-					<div>Loading...</div>
-				) : totalSalesRevenueByCustomer.isError ? (
-					<div>
-						Error: {totalSalesRevenueByCustomer.error.message}
-					</div>
-				) : totalSalesRevenueByCustomer.data ? (
-					<Card className='lg:col-span-2'>
-						<CardHeader>
-							<CardTitle>Customers By Revenue</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<TotalSalesRevenueByCustomer
-								data={totalSalesRevenueByCustomer.data}
-							/>{' '}
-						</CardContent>
-					</Card>
-				) : null}
+				<div className='grid lg:col-span-2 gap-3'>
+					{totalSalesRevenueByCustomer.isLoading ? (
+						<div>Loading...</div>
+					) : totalSalesRevenueByCustomer.isError ? (
+						<div>
+							Error: {totalSalesRevenueByCustomer.error.message}
+						</div>
+					) : totalSalesRevenueByCustomer.data ? (
+						<Card>
+							<CardHeader>
+								<CardTitle>Sales By Product</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<TotalSalesRevenueByCustomer
+									data={totalSalesRevenueByCustomer.data}
+								/>{' '}
+							</CardContent>
+						</Card>
+					) : null}
+					{totalSalesRevenueByCustomer.isLoading ? (
+						<div>Loading...</div>
+					) : totalSalesRevenueByCustomer.isError ? (
+						<div>
+							Error: {totalSalesRevenueByCustomer.error.message}
+						</div>
+					) : totalSalesRevenueByCustomer.data ? (
+						<Card>
+							<CardHeader>
+								<CardTitle>Customers By Revenue</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<TotalSalesRevenueByCustomer
+									data={totalSalesRevenueByCustomer.data}
+								/>{' '}
+							</CardContent>
+						</Card>
+					) : null}
+					{totalSalesRevenueByCustomer.isLoading ? (
+						<div>Loading...</div>
+					) : totalSalesRevenueByCustomer.isError ? (
+						<div>
+							Error: {totalSalesRevenueByCustomer.error.message}
+						</div>
+					) : totalSalesRevenueByCustomer.data ? (
+						<Card>
+							<CardHeader>
+								<CardTitle>Sales By City</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<TotalSalesRevenueByCustomer
+									data={totalSalesRevenueByCustomer.data}
+								/>{' '}
+							</CardContent>
+						</Card>
+					) : null}
+				</div>
 			</div>
 		</main>
 	);
