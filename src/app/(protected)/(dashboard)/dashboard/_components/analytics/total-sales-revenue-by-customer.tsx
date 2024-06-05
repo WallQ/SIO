@@ -1,6 +1,6 @@
 'use client';
 
-import { DonutChart, List, ListItem } from '@tremor/react';
+import { List, ListItem } from '@tremor/react';
 
 import { cn, formatCurrency } from '@/lib/utils';
 
@@ -13,9 +13,9 @@ type CustomersByRevenueProps = {
 	}[];
 };
 
-const TotalSalesRevenueByCustomer: React.FunctionComponent<CustomersByRevenueProps> = ({
-	data,
-}): React.ReactNode => {
+const TotalSalesRevenueByCustomer: React.FunctionComponent<
+	CustomersByRevenueProps
+> = ({ data }): React.ReactNode => {
 	return (
 		<div className='flex flex-col items-center gap-4'>
 			{/* {data ? (

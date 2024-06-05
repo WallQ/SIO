@@ -1,5 +1,5 @@
 import { getServerAuthSession } from '@/server/auth';
-import { relationalDb, starDb } from '@/server/db';
+import { authDb, relationalDb, starDb } from '@/server/db';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
@@ -8,6 +8,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 	const session = await getServerAuthSession();
 	return {
 		db: {
+			authDb: authDb,
 			relational: relationalDb,
 			star: starDb,
 		},

@@ -1,6 +1,6 @@
 import { env } from '@/env';
 import { APP_ROUTES } from '@/routes/app';
-import { starDb } from '@/server/db';
+import { authDb } from '@/server/db';
 import { createTable } from '@/server/db/star-schema';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import {
@@ -29,7 +29,7 @@ declare module 'next-auth' {
 }
 
 export const authOptions: NextAuthOptions = {
-	adapter: DrizzleAdapter(starDb, createTable) as Adapter,
+	adapter: DrizzleAdapter(authDb, createTable) as Adapter,
 	providers: [
 		DiscordProvider({
 			clientId: env.DISCORD_CLIENT_ID,

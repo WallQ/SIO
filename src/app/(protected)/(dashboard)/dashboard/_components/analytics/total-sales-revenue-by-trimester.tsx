@@ -23,10 +23,10 @@ const TotalSalesRevenueByTrimester: React.FunctionComponent<
 			categories={['amount']}
 			colors={['blue']}
 			valueFormatter={(v: number) => formatCurrency(v, false, false)}
-			yAxisWidth={100}
+			yAxisWidth={48}
 			showAnimation={true}
 			stack={true}
-			className='h-screen flex-1 w-full'
+			className='h-[384px] flex-1'
 		/>
 	);
 };

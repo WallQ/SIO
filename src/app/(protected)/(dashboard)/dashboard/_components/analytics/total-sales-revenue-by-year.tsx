@@ -2,6 +2,7 @@
 
 import { AreaChart, BadgeDelta, type DeltaType } from '@tremor/react';
 
+import { formatCurrency } from '@/lib/utils';
 import {
 	Card,
 	CardContent,
@@ -15,7 +16,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { formatCurrency } from '@/lib/utils';
 
 type TotalSalesRevenueProps = {
 	data: {
@@ -75,7 +75,7 @@ const TotalSalesRevenueByYear: React.FunctionComponent<
 					startEndOnly={true}
 					showGridLines={false}
 					showAnimation={true}
-					className='mt-4 h-20'
+					className='mt-4 h-40'
 				/>
 			</CardContent>
 		</Card>

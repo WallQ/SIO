@@ -19,10 +19,6 @@ export const addresses = createTable('addresses', {
 });
 
 export const addressesRelations = relations(addresses, ({ one }) => ({
-	supplier: one(suppliers, {
-		fields: [addresses.id],
-		references: [suppliers.address_id],
-	}),
 	company: one(companies, {
 		fields: [addresses.id],
 		references: [companies.address_id],
@@ -36,59 +32,38 @@ export const addressesRelations = relations(addresses, ({ one }) => ({
 export const companies = createTable('companies', {
 	id: serial('id').notNull().primaryKey(),
 	name: varchar('name', { length: 64 }).notNull(),
+	fiscal_year: integer('fiscal_year').notNull(),
+	start_date: timestamp('start_date').notNull(),
+	end_date: timestamp('end_date').notNull(),
 	address_id: integer('address_id')
 		.notNull()
 		.references(() => addresses.id, {
 			onDelete: 'cascade',
 			onUpdate: 'cascade',
 		}),
-	fiscal_year: integer('fiscal_year').notNull(),
-	start_date: timestamp('start_date').notNull(),
-	end_date: timestamp('end_date').notNull(),
 });
 
 export const companiesRelations = relations(companies, ({ one, many }) => ({
-	invoice: many(invoices),
 	product: many(products),
+	invoice: many(invoices),
 	address: one(addresses, {
 		fields: [companies.address_id],
 		references: [addresses.id],
 	}),
 }));
 
-export const suppliers = createTable('suppliers', {
-	id: serial('id').notNull().primaryKey(),
-	name: varchar('name', { length: 64 }).notNull(),
-	email: varchar('email', { length: 64 }).notNull(),
-	telephone: varchar('telephone', { length: 64 }).notNull(),
-	address_id: integer('address_id')
-		.notNull()
-		.references(() => addresses.id, {
-			onDelete: 'cascade',
-			onUpdate: 'cascade',
-		}),
-});
-
-// export const suppliersRelations = relations(suppliers, ({ many, one }) => ({
-// 	invoice: many(invoices),
-// 	address: one(addresses, {
-// 		fields: [suppliers.address_id],
-// 		references: [addresses.id],
-// 	}),
-// }));
-
 export const customers = createTable('customers', {
 	id: serial('id').notNull().primaryKey(),
-	name: varchar('name', { length: 64 }).notNull(),
 	tax_id: varchar('tax_id', { length: 64 }).notNull(),
+	name: varchar('name', { length: 64 }).notNull(),
+	email: varchar('email', { length: 64 }).notNull(),
+	telephone: varchar('telephone', { length: 64 }).notNull(),
 	address_id: integer('address_id')
 		.notNull()
 		.references(() => addresses.id, {
 			onDelete: 'cascade',
 			onUpdate: 'cascade',
 		}),
-	telephone: varchar('telephone', { length: 64 }).notNull(),
-	email: varchar('email', { length: 64 }).notNull(),
 });
 
 export const customersRelations = relations(customers, ({ one, many }) => ({
@@ -101,8 +76,8 @@ export const customersRelations = relations(customers, ({ one, many }) => ({
 
 export const products = createTable('products', {
 	id: serial('id').notNull().primaryKey(),
-	category: varchar('category', { length: 64 }).notNull(),
 	name: varchar('name', { length: 64 }).notNull(),
+	category: varchar('category', { length: 64 }).notNull(),
 	company_id: integer('company_id')
 		.notNull()
 		.references(() => companies.id, {
@@ -138,18 +113,10 @@ export const invoices = createTable('invoices', {
 		onDelete: 'cascade',
 		onUpdate: 'cascade',
 	}),
-	// supplier_id: integer('supplier_id').references(() => suppliers.id, {
-	// 	onDelete: 'cascade',
-	// 	onUpdate: 'cascade',
-	// }),
 });
 
 export const invoicesRelations = relations(invoices, ({ one, many }) => ({
 	invoiceLine: many(lines),
-	// supplier: one(suppliers, {
-	// 	fields: [invoices.supplier_id],
-	// 	references: [suppliers.id],
-	// }),
 	company: one(companies, {
 		fields: [invoices.company_id],
 		references: [companies.id],
@@ -164,7 +131,7 @@ export const lines = createTable('lines', {
 	id: serial('id').notNull().primaryKey(),
 	quantity: integer('quantity').notNull(),
 	unit_price: doublePrecision('unit_price').notNull(),
-	amount: doublePrecision('amount').notNull(),
+	net_total: doublePrecision('amount').notNull(),
 	tax_percentage: integer('tax_percentage').notNull(),
 	product_id: integer('product_id')
 		.notNull()

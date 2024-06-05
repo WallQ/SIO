@@ -11,20 +11,20 @@ export interface AuditFile {
 
 export interface Header {
 	AuditFileVersion: string;
-	CompanyID: number;
-	TaxRegistrationNumber: number;
+	CompanyID: string;
+	TaxRegistrationNumber: string;
 	TaxAccountingBasis: string;
 	CompanyName: string;
 	BusinessName: string;
 	CompanyAddress: Address;
-	FiscalYear: number;
+	FiscalYear: string;
 	StartDate: string;
 	EndDate: string;
 	CurrencyCode: string;
 	DateCreated: string;
 	TaxEntity: string;
-	ProductCompanyTaxID: number;
-	SoftwareCertificateNumber: number;
+	ProductCompanyTaxID: string;
+	SoftwareCertificateNumber: string;
 	ProductID: string;
 	ProductVersion: string;
 }
@@ -43,7 +43,7 @@ export interface MasterFiles {
 }
 
 export interface Customer {
-	CustomerID: number;
+	CustomerID: string;
 	AccountID: string;
 	CustomerTaxID: string;
 	CompanyName: string;
@@ -51,15 +51,15 @@ export interface Customer {
 	ShipToAddress: Address;
 	Telephone: string;
 	Email: string;
-	SelfBillingIndicator: number;
+	SelfBillingIndicator: string;
 }
 
 export interface Product {
 	ProductType: string;
-	ProductCode: number;
+	ProductCode: string;
 	ProductGroup: string;
 	ProductDescription: string;
-	ProductNumberCode: number;
+	ProductNumberCode: string;
 }
 
 export interface TaxTable {
@@ -71,28 +71,28 @@ export interface Tax {
 	TaxCountryRegion: string;
 	TaxCode: string;
 	Description: string;
-	TaxPercentage: number;
+	TaxPercentage: string;
 }
 
 export interface SourceDocuments {
 	SalesInvoices: {
-		NumberOfEntries: number;
-		TotalDebit: number;
-		TotalCredit: number;
+		NumberOfEntries: string;
+		TotalDebit: string;
+		TotalCredit: string;
 		Invoice: Invoice[];
 	};
 	MovementOfGoods: {
-		NumberOfMovementLines: number;
-		TotalQuantityIssued: number;
+		NumberOfMovementLines: string;
+		TotalQuantityIssued: string;
 	};
 	WorkingDocuments: Payment;
 	Payments: Payment;
 }
 
 export interface Payment {
-	NumberOfEntries: number;
-	TotalDebit: number;
-	TotalCredit: number;
+	NumberOfEntries: string;
+	TotalDebit: string;
+	TotalCredit: string;
 }
 
 export interface Invoice {
@@ -101,44 +101,44 @@ export interface Invoice {
 	DocumentStatus: {
 		InvoiceStatus: string;
 		InvoiceStatusDate: string;
-		SourceID: number;
+		SourceID: string;
 		SourceBilling: string;
 	};
 	Hash: string;
-	HashControl: number;
-	Period: number;
+	HashControl: string;
+	Period: string;
 	InvoiceDate: string;
 	InvoiceType: string;
 	SpecialRegimes: {
-		SelfBillingIndicator: number;
-		CashVATSchemeIndicator: number;
-		ThirdPartiesBillingIndicator: number;
+		SelfBillingIndicator: string;
+		CashVATSchemeIndicator: string;
+		ThirdPartiesBillingIndicator: string;
 	};
-	SourceID: number;
+	SourceID: string;
 	SystemEntryDate: string;
-	CustomerID: number;
+	CustomerID: string;
 	Line: Line[];
 	DocumentTotals: {
-		TaxPayable: number;
-		NetTotal: number;
-		GrossTotal: number;
+		TaxPayable: string;
+		NetTotal: string;
+		GrossTotal: string;
 	};
 }
 
 export interface Line {
-	LineNumber: number;
-	ProductCode: number;
+	LineNumber: string;
+	ProductCode: string;
 	ProductDescription: string;
-	Quantity: number;
+	Quantity: string;
 	UnitOfMeasure: string;
-	UnitPrice: number;
+	UnitPrice: string;
 	TaxPointDate: string;
 	Description: string;
-	CreditAmount: number;
+	CreditAmount: string;
 	Tax: {
 		TaxType: string;
 		TaxCountryRegion: string;
 		TaxCode: string;
-		TaxPercentage: number;
+		TaxPercentage: string;
 	};
 }

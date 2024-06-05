@@ -58,11 +58,9 @@ export interface Invoice {
 	GrossTotal: number;
 }
 
-export interface ParsedXML {
-	TOCOnline: {
-		Company: Company;
-		Customers: Customer[];
-		Products: Product[];
-		Invoices: Invoice[];
-	};
+export interface RawData {
+	Company: Company;
+	Customers: Customer[];
+	Products: Product[];
+	Invoices: Invoice[];
 }

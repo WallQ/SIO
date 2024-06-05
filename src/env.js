@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
 	server: {
+		AUTH_DB_URL: z.string().url(),
 		RELATIONAL_DB_URL: z.string().url(),
 		STAR_DB_URL: z.string().url(),
 		NODE_ENV: z
@@ -28,6 +29,7 @@ export const env = createEnv({
 		// NEXT_PUBLIC_CLIENTVAR: z.string(),
 	},
 	runtimeEnv: {
+		AUTH_DB_URL: process.env.AUTH_DB_URL,
 		RELATIONAL_DB_URL: process.env.RELATIONAL_DB_URL,
 		STAR_DB_URL: process.env.STAR_DB_URL,
 		NODE_ENV: process.env.NODE_ENV,

@@ -5,11 +5,13 @@
 	"type": "module",
 	"scripts": {
 		"build": "next build",
+		"db:push-a": "drizzle-kit push --config=drizzle.auth.config.ts",
 		"db:push-r": "drizzle-kit push --config=drizzle.relational.config.ts",
 		"db:push-s": "drizzle-kit push --config=drizzle.star.config.ts",
-		"db:push": "pnpm run db:push-r && pnpm run db:push-s",
-		"db:studio-r": "drizzle-kit studio --config=drizzle.relational.config.ts --port=3001",
-		"db:studio-s": "drizzle-kit studio --config=drizzle.star.config.ts --port=3002",
+		"db:push": "pnpm run db:push-a && pnpm run db:push-r && pnpm run db:push-s",
+		"db:studio-a": "drizzle-kit studio --config=drizzle.auth.config.ts --port=3001",
+		"db:studio-r": "drizzle-kit studio --config=drizzle.relational.config.ts --port=3002",
+		"db:studio-s": "drizzle-kit studio --config=drizzle.star.config.ts --port=3003",
 		"dev": "next dev --turbo",
 		"lint": "next lint",
 		"start": "next start"

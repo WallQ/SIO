@@ -46,7 +46,7 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 
 	const { data: companies } = api.companies.getCompanies.useQuery();
 
-	const uploadFile = api.upload.file.useMutation({
+	const uploadFile = api.upload.data.useMutation({
 		onSuccess: () => {
 			toast({
 				title: 'Everything went well!',
@@ -64,8 +64,9 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 	});
 
 	const handleUpload = async (files: File[]) => {
-		const base64 = (await convertFileToBase64(files[0]!)) as string;
-		uploadFile.mutate({ file: base64 });
+		const base64 = await convertFileToBase64(files[0]!);
+		if (!base64) return;
+		uploadFile.mutate({ data: base64 });
 	};
 
 	return (
