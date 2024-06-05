@@ -85,27 +85,31 @@ export const insertCustomers = async (
 	db: PostgresJsDatabase<typeof relationalSchema>,
 	customers: Customer[],
 	insertedAddresses: (typeof relationalSchema.addresses.$inferSelect)[],
+	company: typeof relationalSchema.companies.$inferSelect,
 ) => {
 	const parsedCustomers: (typeof relationalSchema.customers.$inferInsert & {
 		old_id: number;
-	})[] = customers.map((customer) => {
-		const address = insertedAddresses.find(
-			(address) =>
-				address.street === customer.Address.Street &&
-				address.city === customer.Address.City,
-		);
+	})[] = [
+		...customers.map((customer) => {
+			const address = insertedAddresses.find(
+				(address) =>
+					address.street === customer.Address.Street &&
+					address.city === customer.Address.City,
+			);
 
-		if (!address) throw new Error('Customer address not found!');
+			if (!address) throw new Error('Customer address not found!');
 
-		return {
-			old_id: customer.Id,
-			tax_id: customer.TaxId,
-			name: customer.Name,
-			email: customer.Email,
-			telephone: customer.Telephone,
-			address_id: address.id,
-		};
-	});
+			return {
+				old_id: customer.Id,
+				tax_id: customer.TaxId,
+				name: customer.Name,
+				email: customer.Email,
+				telephone: customer.Telephone,
+				address_id: address.id,
+				company_id: company.id,
+			};
+		}),
+	];
 
 	const insertedCustomers = await db
 		.insert(relationalSchema.customers)
@@ -129,18 +133,21 @@ export const insertProducts = async (
 ) => {
 	const parsedProducts: (typeof relationalSchema.products.$inferInsert & {
 		old_id: number;
-	})[] = products
-		.map((product) => {
-			if (product.Id.toString().toUpperCase() === 'OUTROS') return null;
+	})[] = [
+		...products
+			.map((product) => {
+				if (product.Id.toString().toUpperCase() === 'OUTROS')
+					return null;
 
-			return {
-				old_id: product.Id,
-				category: product.Category,
-				name: product.Name,
-				company_id: company.id,
-			};
-		})
-		.filter((product) => product !== null);
+				return {
+					old_id: product.Id,
+					category: product.Category,
+					name: product.Name,
+					company_id: company.id,
+				};
+			})
+			.filter((product) => product !== null),
+	];
 
 	const insertedProducts = await db
 		.insert(relationalSchema.products)

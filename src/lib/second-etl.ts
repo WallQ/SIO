@@ -137,6 +137,7 @@ export const insertCustomersDim = async (
 ) => {
 	const selectedCustomers: (typeof customers.$inferSelect & {
 		address: typeof addresses.$inferSelect;
+		company: typeof companies.$inferSelect;
 	})[] = await dbRelational
 		.select({
 			id: customers.id,
@@ -145,10 +146,13 @@ export const insertCustomersDim = async (
 			email: customers.email,
 			telephone: customers.telephone,
 			tax_id: customers.tax_id,
+			company_id: customers.company_id,
 			address: addresses,
+			company: companies,
 		})
 		.from(customers)
-		.innerJoin(addresses, eq(customers.address_id, addresses.id));
+		.innerJoin(addresses, eq(customers.address_id, addresses.id))
+		.innerJoin(companies, eq(customers.company_id, companies.id));
 
 	const parsedCustomersDimName: (typeof customerDimension.$inferInsert)[] =
 		selectedCustomers.map((customer) => {
@@ -252,7 +256,7 @@ export const insertTimeDim = async (
 ) => {
 	const selectedTime = await dbRelational
 		.selectDistinct({
-			year: sql<number>`EXTRACT(YEAR FROM ${invoices.date})`.as('year'),
+			year: sql<string>`EXTRACT(YEAR FROM ${invoices.date})`.as('year'),
 		})
 		.from(invoices);
 
@@ -262,6 +266,8 @@ export const insertTimeDim = async (
 			return {
 				sk,
 				year: time.year,
+				quarter: null,
+				month: null,
 			};
 		});
 
@@ -273,7 +279,8 @@ export const insertTimeDim = async (
 				return {
 					sk,
 					year: time.year,
-					quarter,
+					quarter: quarter.toString(),
+					month: null,
 				};
 			});
 		});
@@ -287,8 +294,8 @@ export const insertTimeDim = async (
 				return {
 					sk,
 					year: time.year,
-					month,
-					quarter,
+					month: month.toString(),
+					quarter: quarter.toString(),
 				};
 			});
 		});

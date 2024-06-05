@@ -1,8 +1,25 @@
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import {
+	addresses,
+	companies,
+	customers,
+	invoices,
+	lines,
+	products,
+} from '@/server/db/relational-schema';
+import {
+	companyDimension,
+	customerDimension,
+	geoDimension,
+	productDimension,
+	salesFact,
+	timeDimension,
+} from '@/server/db/star-schema';
 import { XMLParser } from 'fast-xml-parser';
 import { z } from 'zod';
 
 import { type SAFT } from '@/types/saft';
+import { analitycs } from '@/lib/analytics';
 import {
 	insertAddresses,
 	insertCompany,
@@ -60,6 +77,7 @@ export const uploadRouter = createTRPCRouter({
 					ctx.db.relational,
 					Customers,
 					insertedAddresses,
+					insertedCompany,
 				);
 
 			const { insertedProducts, parsedProducts } = await insertProducts(
@@ -84,6 +102,29 @@ export const uploadRouter = createTRPCRouter({
 				insertedProducts,
 			);
 
+			await Promise.allSettled([
+				void ctx.db.star.delete(companyDimension),
+				void ctx.db.star.delete(productDimension),
+				void ctx.db.star.delete(customerDimension),
+				void ctx.db.star.delete(geoDimension),
+				void ctx.db.star.delete(timeDimension),
+				void ctx.db.star.delete(salesFact),
+			])
+				.then((res) => {
+					for (const { status } of res) {
+						if (status === 'rejected') {
+							throw new Error(
+								'Failed to delete star-schema table!',
+							);
+						} else {
+							console.log('Star-schema table deleted!');
+						}
+					}
+				})
+				.catch((err) => {
+					console.error("Something wen't wrong!", err);
+				});
+
 			await insertCompaniesDim(ctx.db.relational, ctx.db.star);
 
 			await insertProductsDim(ctx.db.relational, ctx.db.star);
@@ -93,5 +134,27 @@ export const uploadRouter = createTRPCRouter({
 			await insertGeoDim(ctx.db.relational, ctx.db.star);
 
 			await insertTimeDim(ctx.db.relational, ctx.db.star);
+
+			await analitycs(ctx.db.relational, ctx.db.star);
 		}),
+
+	dev: protectedProcedure.mutation(async ({ ctx }) => {
+		await Promise.allSettled([
+			void ctx.db.star.delete(addresses),
+			void ctx.db.star.delete(companies),
+			void ctx.db.star.delete(customers),
+			void ctx.db.star.delete(products),
+			void ctx.db.star.delete(invoices),
+			void ctx.db.star.delete(lines),
+		]);
+
+		await Promise.allSettled([
+			void ctx.db.star.delete(companyDimension),
+			void ctx.db.star.delete(productDimension),
+			void ctx.db.star.delete(customerDimension),
+			void ctx.db.star.delete(geoDimension),
+			void ctx.db.star.delete(timeDimension),
+			void ctx.db.star.delete(salesFact),
+		]);
+	}),
 });

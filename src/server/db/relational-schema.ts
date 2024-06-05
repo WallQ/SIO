@@ -64,6 +64,12 @@ export const customers = createTable('customers', {
 			onDelete: 'cascade',
 			onUpdate: 'cascade',
 		}),
+	company_id: integer('company_id')
+		.notNull()
+		.references(() => companies.id, {
+			onDelete: 'cascade',
+			onUpdate: 'cascade',
+		}),
 });
 
 export const customersRelations = relations(customers, ({ one, many }) => ({
@@ -71,6 +77,10 @@ export const customersRelations = relations(customers, ({ one, many }) => ({
 	address: one(addresses, {
 		fields: [customers.address_id],
 		references: [addresses.id],
+	}),
+	company: one(companies, {
+		fields: [customers.company_id],
+		references: [companies.id],
 	}),
 }));
 
