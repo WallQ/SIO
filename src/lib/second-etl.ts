@@ -60,6 +60,17 @@ export const insertCompaniesDim = async (
 
 	const parsedCompaniesDimCountry: (typeof companyDimension.$inferInsert)[] =
 		selectedCompanies.map((company) => {
+			const sk = `SK_${company.name.replace(/\s+/g, '-')}_${company.address.country.replace(/\s+/g, '-')}`;
+			return {
+				sk,
+				name: company.name,
+				city: null,
+				country: company.address.country,
+			};
+		});
+
+	const parsedCompaniesCityCountry: (typeof companyDimension.$inferInsert)[] =
+		selectedCompanies.map((company) => {
 			const sk = `SK_${company.name.replace(/\s+/g, '-')}_${company.address.city.replace(/\s+/g, '-')}_${company.address.country.replace(/\s+/g, '-')}`;
 			return {
 				sk,
@@ -73,6 +84,7 @@ export const insertCompaniesDim = async (
 		...parsedCompaniesDimName,
 		...parsedCompaniesDimCity,
 		...parsedCompaniesDimCountry,
+		...parsedCompaniesCityCountry,
 	];
 
 	const insertedCompaniesDim = await dbStar
@@ -106,6 +118,16 @@ export const insertProductsDim = async (
 
 	const parsedProductsDimCategory: (typeof productDimension.$inferInsert)[] =
 		selectedProducts.map((product) => {
+			const sk = `SK_${product.category.replace(/\s+/g, '-')}`;
+			return {
+				sk,
+				name: null,
+				category: product.category,
+			};
+		});
+
+	const parsedProductsDimNameCategory: (typeof productDimension.$inferInsert)[] =
+		selectedProducts.map((product) => {
 			const sk = `SK_${product.name.replace(/\s+/g, '-')}_${product.category.replace(/\s+/g, '-')}`;
 			return {
 				sk,
@@ -117,6 +139,7 @@ export const insertProductsDim = async (
 	const parsedProductsDim: (typeof productDimension.$inferInsert)[] = [
 		...parsedProductsDimName,
 		...parsedProductsDimCategory,
+		...parsedProductsDimNameCategory,
 	];
 
 	const insertedProductsDim = await dbStar

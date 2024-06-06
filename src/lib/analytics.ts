@@ -413,6 +413,219 @@ export const totalSalesRevenuePerMonthProduct = async (
 		});
 };
 
+export const totalSalesRevenuePerYearCategory = async (
+	dbRelational: PostgresJsDatabase<typeof relationalSchema>,
+	dbStar: PostgresJsDatabase<typeof starSchema>,
+	year: string,
+	company: string,
+	category: string,
+) => {
+	const skCompany = await dbStar
+		.select({
+			sk: companyDimension.sk,
+		})
+		.from(companyDimension)
+		.where(
+			sql`name = ${company} AND COALESCE(city, '') = '' AND COALESCE(country, '') = ''`,
+		)
+		.then((res) => res[0]);
+	if (!skCompany) throw new Error('Failed to get SK Company!');
+
+	const skTime = await dbStar
+		.select({
+			sk: timeDimension.sk,
+		})
+		.from(timeDimension)
+		.where(
+			sql`year = ${year} AND COALESCE(quarter, '') = '' AND COALESCE(month, '') = ''`,
+		)
+		.then((res) => res[0]);
+	if (!skTime) throw new Error('Failed to get SK Time!');
+
+	const skCategory = await dbStar
+		.select({
+			sk: productDimension.sk,
+		})
+		.from(productDimension)
+		.where(sql`category = ${category} AND COALESCE(name, '') = ''`)
+		.then((res) => res[0]);
+	if (!skCategory) throw new Error('Failed to get SK Category!');
+
+	const totalSales = await dbRelational
+		.select({
+			total: sql<number>`SUM(gross_total)`.as('total'),
+		})
+		.from(lines)
+		.innerJoin(invoices, eq(lines.invoice_id, invoices.id))
+		.innerJoin(companies, eq(invoices.company_id, companies.id))
+		.innerJoin(products, eq(lines.product_id, products.id))
+		.where(
+			sql`EXTRACT(year from invoices.date) = ${year} AND companies.name = ${company} AND products.category = ${category}`,
+		)
+		.then((res) => res[0]);
+	if (!totalSales) throw new Error('Failed to get total sales!');
+
+	const composedSK = `${skCompany.sk}_${skTime.sk}_${skCategory.sk}`;
+
+	const result = totalSales.total ? totalSales.total.toString() : '0';
+
+	await dbStar
+		.insert(salesFact)
+		.values({
+			sk: composedSK,
+			value: result,
+		})
+		.onConflictDoUpdate({
+			target: salesFact.sk,
+			set: {
+				value: result,
+			},
+		});
+};
+
+export const totalSalesRevenuePerQuarterCategory = async (
+	dbRelational: PostgresJsDatabase<typeof relationalSchema>,
+	dbStar: PostgresJsDatabase<typeof starSchema>,
+	year: string,
+	quarter: string,
+	company: string,
+	category: string,
+) => {
+	const skCompany = await dbStar
+		.select({
+			sk: companyDimension.sk,
+		})
+		.from(companyDimension)
+		.where(
+			sql`name = ${company} AND COALESCE(city, '') = '' AND COALESCE(country, '') = ''`,
+		)
+		.then((res) => res[0]);
+	if (!skCompany) throw new Error('Failed to get SK Company!');
+
+	const skTime = await dbStar
+		.select({
+			sk: timeDimension.sk,
+		})
+		.from(timeDimension)
+		.where(
+			sql`year = ${year} AND quarter = ${quarter} AND COALESCE(month, '') = ''`,
+		)
+		.then((res) => res[0]);
+	if (!skTime) throw new Error('Failed to get SK Time!');
+
+	const skCategory = await dbStar
+		.select({
+			sk: productDimension.sk,
+		})
+		.from(productDimension)
+		.where(sql`category = ${category} AND COALESCE(name, '') = ''`)
+		.then((res) => res[0]);
+	if (!skCategory) throw new Error('Failed to get SK Category!');
+
+	const totalSales = await dbRelational
+		.select({
+			total: sql<number>`SUM(gross_total)`.as('total'),
+		})
+		.from(lines)
+		.innerJoin(invoices, eq(lines.invoice_id, invoices.id))
+		.innerJoin(companies, eq(invoices.company_id, companies.id))
+		.innerJoin(products, eq(lines.product_id, products.id))
+		.where(
+			sql`EXTRACT(year from invoices.date) = ${year} AND EXTRACT(quarter from invoices.date) = ${quarter} AND companies.name = ${company} AND products.category = ${category}`,
+		)
+		.then((res) => res[0]);
+	if (!totalSales) throw new Error('Failed to get total sales!');
+
+	const composedSK = `${skCompany.sk}_${skTime.sk}_${skCategory.sk}`;
+
+	const result = totalSales.total ? totalSales.total.toString() : '0';
+
+	await dbStar
+		.insert(salesFact)
+		.values({
+			sk: composedSK,
+			value: result,
+		})
+		.onConflictDoUpdate({
+			target: salesFact.sk,
+			set: {
+				value: result,
+			},
+		});
+};
+
+export const totalSalesRevenuePerMonthCategory = async (
+	dbRelational: PostgresJsDatabase<typeof relationalSchema>,
+	dbStar: PostgresJsDatabase<typeof starSchema>,
+	year: string,
+	quarter: string,
+	month: string,
+	company: string,
+	category: string,
+) => {
+	const skCompany = await dbStar
+		.select({
+			sk: companyDimension.sk,
+		})
+		.from(companyDimension)
+		.where(
+			sql`name = ${company} AND COALESCE(city, '') = '' AND COALESCE(country, '') = ''`,
+		)
+		.then((res) => res[0]);
+	if (!skCompany) throw new Error('Failed to get SK Company!');
+
+	const skTime = await dbStar
+		.select({
+			sk: timeDimension.sk,
+		})
+		.from(timeDimension)
+		.where(
+			sql`year = ${year} AND quarter = ${quarter} AND month = ${month}`,
+		)
+		.then((res) => res[0]);
+	if (!skTime) throw new Error('Failed to get SK Time!');
+
+	const skCategory = await dbStar
+		.select({
+			sk: productDimension.sk,
+		})
+		.from(productDimension)
+		.where(sql`category = ${category} AND COALESCE(name, '') = ''`)
+		.then((res) => res[0]);
+	if (!skCategory) throw new Error('Failed to get SK Category!');
+
+	const totalSales = await dbRelational
+		.select({
+			total: sql<number>`SUM(gross_total)`.as('total'),
+		})
+		.from(lines)
+		.innerJoin(invoices, eq(lines.invoice_id, invoices.id))
+		.innerJoin(companies, eq(invoices.company_id, companies.id))
+		.innerJoin(products, eq(lines.product_id, products.id))
+		.where(
+			sql`EXTRACT(year from invoices.date) = ${year} AND EXTRACT(quarter from invoices.date) = ${quarter} AND EXTRACT(month from invoices.date) = ${month} AND companies.name = ${company} AND products.category = ${category}`,
+		)
+		.then((res) => res[0]);
+	if (!totalSales) throw new Error('Failed to get total sales!');
+
+	const composedSK = `${skCompany.sk}_${skTime.sk}_${skCategory.sk}`;
+
+	const result = totalSales.total ? totalSales.total.toString() : '0';
+
+	await dbStar
+		.insert(salesFact)
+		.values({
+			sk: composedSK,
+			value: result,
+		})
+		.onConflictDoUpdate({
+			target: salesFact.sk,
+			set: {
+				value: result,
+			},
+		});
+};
+
 export const totalSalesRevenuePerYearCountry = async (
 	dbRelational: PostgresJsDatabase<typeof relationalSchema>,
 	dbStar: PostgresJsDatabase<typeof starSchema>,
@@ -1075,8 +1288,17 @@ export const analitycs = async (
 		.selectDistinct({
 			product: productDimension.name,
 		})
-		.from(productDimension);
+		.from(productDimension)
+		.where(sql`COALESCE(name, '') != ''`);
 	if (!selectedProducts) throw new Error('Failed to get products!');
+
+	const selectedCategories = await dbStar
+		.selectDistinct({
+			category: productDimension.category,
+		})
+		.from(productDimension)
+		.where(sql`COALESCE(category, '') != ''`);
+	if (!selectedCategories) throw new Error('Failed to get categories!');
 
 	const selectedCountries = await dbStar
 		.selectDistinct({
@@ -1092,8 +1314,6 @@ export const analitycs = async (
 		.from(geoDimension)
 		.where(sql`COALESCE(city, '') != ''`);
 	if (!selectedCities) throw new Error('Failed to get cities!');
-
-	console.log('selectedCities', selectedCities);
 
 	const selectedCustomers = await dbStar
 		.selectDistinct({
@@ -1194,6 +1414,64 @@ export const analitycs = async (
 							month.toString(),
 							company.company,
 							product.product,
+						),
+					);
+				}
+				await Promise.all(monthsPromises);
+			}
+
+			for (const category of selectedCategories) {
+				if (!category.category)
+					throw new Error('Failed to get category!');
+
+				const productCompany = await dbRelational
+					.select({
+						company: companies.name,
+					})
+					.from(products)
+					.innerJoin(companies, eq(products.company_id, companies.id))
+					.where(
+						eq(products.category, category.category) &&
+							eq(companies.name, company.company),
+					)
+					.then((res) => res[0]);
+
+				if (!productCompany) continue;
+
+				await totalSalesRevenuePerYearCategory(
+					dbRelational,
+					dbStar,
+					year.year,
+					company.company,
+					category.category,
+				);
+
+				const quartersPromises = [];
+				for (let quarter = 1; quarter <= 4; quarter++) {
+					quartersPromises.push(
+						totalSalesRevenuePerQuarterCategory(
+							dbRelational,
+							dbStar,
+							year.year,
+							quarter.toString(),
+							company.company,
+							category.category,
+						),
+					);
+				}
+				await Promise.all(quartersPromises);
+
+				const monthsPromises = [];
+				for (let month = 1; month <= 12; month++) {
+					monthsPromises.push(
+						totalSalesRevenuePerMonthCategory(
+							dbRelational,
+							dbStar,
+							year.year,
+							Math.ceil(month / 3).toString(),
+							month.toString(),
+							company.company,
+							category.category,
 						),
 					);
 				}
