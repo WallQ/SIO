@@ -27,14 +27,14 @@ cp .env
 4. Set up the database:
 
 ```bash
+chmod +x ./start-database.sh
 ./start-database.sh
 ```
 
 5. Alter the database schema:
 
 ```bash
-pnpm run db:push-r
-pnpm run db:push-s
+pnpm run db:push
 ```
 
 6. Run the application:
@@ -46,6 +46,7 @@ pnpm run dev
 7. (Optional) Interact with the databases with a GUI tool:
 
 ```bash
+pnpm run db:studio-a
 pnpm run db:studio-r
 pnpm run db:studio-s
 ```
