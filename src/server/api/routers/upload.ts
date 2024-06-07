@@ -137,24 +137,4 @@ export const uploadRouter = createTRPCRouter({
 
 			await analitycs(ctx.db.relational, ctx.db.star);
 		}),
-
-	dev: protectedProcedure.mutation(async ({ ctx }) => {
-		await Promise.allSettled([
-			void ctx.db.star.delete(addresses),
-			void ctx.db.star.delete(companies),
-			void ctx.db.star.delete(customers),
-			void ctx.db.star.delete(products),
-			void ctx.db.star.delete(invoices),
-			void ctx.db.star.delete(lines),
-		]);
-
-		await Promise.allSettled([
-			void ctx.db.star.delete(companyDimension),
-			void ctx.db.star.delete(productDimension),
-			void ctx.db.star.delete(customerDimension),
-			void ctx.db.star.delete(geoDimension),
-			void ctx.db.star.delete(timeDimension),
-			void ctx.db.star.delete(salesFact),
-		]);
-	}),
 });
