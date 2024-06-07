@@ -1,81 +1,37 @@
 'use client';
 
 import { useCompanyStore } from '@/stores/companies';
+import { api } from '@/trpc/react';
+import TotalSalesRevenueByYear from './_components/analytics/total-sales-revenue-by-year';
+import { useSelectedYearStore } from '@/stores/years';
 
 export default function Dashboard() {
 	const selectedCompany = useCompanyStore((state) => state.selectedCompany);
+	const selectedYear = useSelectedYearStore((state) => state.selectedYear);
 
-	// const totalSalesRevenueByYear =
-	// 	api.overview.totalSalesRevenueByYear.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 		year: 2023,
-	// 	});
+	const years = api.years.getYears.useQuery();
+	const companies = api.companies.getCompanies.useQuery();
 
-	// const totalSalesRevenueThisTrimester =
-	// 	api.overview.totalSalesRevenueThisTrimester.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 	});
+	interface QueryOptions {
+		companyId?: number;
+		year?: number;
+	}
 
-	// const totalSalesRevenueThisMonth =
-	// 	api.overview.totalSalesRevenueThisMonth.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 	});
-
-	// const totalSalesRevenueThisDay =
-	// 	api.overview.totalSalesRevenueThisDay.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 	});
-
-	// const totalSalesRevenueThisWeek =
-	// 	api.overview.totalSalesRevenueThisWeek.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 	});
-
-	// const averageSaleRevenuePerSale =
-	// 	api.overview.averageSaleRevenuePerSale.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 	});
-
-	// const totalCustomers = api.overview.totalCustomers.useQuery({
-	// 	companyId: selectedCompany ? selectedCompany.id : 0,
-	// });
-
-	// const totalSalesRevenueByProduct =
-	// 	api.overview.totalSalesRevenueByProduct.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 		year: 2023,
-	// 	});
-
-	// const totalSalesRevenueByCity =
-	// 	api.overview.totalSalesRevenueByCity.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 		year: 2023,
-	// 	});
-
-	// const totalSalesRevenueByTrimester =
-	// 	api.overview.totalSalesRevenueByTrimester.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 		year: 2023,
-	// 	});
-
-	// const totalSalesRevenueByCustomer =
-	// 	api.overview.totalSalesRevenueByCustomer.useQuery({
-	// 		companyId: selectedCompany ? selectedCompany.id : 0,
-	// 		year: 2023,
-	// 	});
+	const totalSalesRevenueByYear = api.overview.totalSalesRevenueByYear.useQuery({
+		companyId: selectedCompany ? selectedCompany.id : 0,
+		year: selectedYear ? parseInt(selectedYear, 10) : new Date().getFullYear(),
+	} as QueryOptions);
 
 	return (
 		<main className='flex w-full flex-1 flex-col items-start justify-between gap-4 p-4 sm:px-6 sm:py-0'>
 			<div className='grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-				{/* {totalSalesRevenueByYear.isLoading ? (
+				{totalSalesRevenueByYear.isLoading ? (
 					<div>Loading...</div>
 				) : totalSalesRevenueByYear.isError ? (
 					<div>Error: {totalSalesRevenueByYear.error.message}</div>
 				) : totalSalesRevenueByYear.data ? (
-					<TotalSalesRevenueByYear
-						data={totalSalesRevenueByYear.data}
-					/>
-				) : null} */}
+					<TotalSalesRevenueByYear data={totalSalesRevenueByYear.data} />
+				) : null}
 				<div className='flex flex-col items-center justify-between gap-4'>
 					{/* {totalSalesRevenueThisMonth.isLoading ? (
 						<div>Loading...</div>

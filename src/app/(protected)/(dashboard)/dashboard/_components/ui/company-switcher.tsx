@@ -105,7 +105,7 @@ const CompanySwitcher: React.FunctionComponent = (): React.ReactNode => {
 									{companies.map((company) => (
 										<CommandItem
 											key={company.id}
-											value={`${company.id}`}
+											value={`${company.name}`}
 											onSelect={() => {
 												setSelectedCompany(company);
 												setOpenPopover(false);
