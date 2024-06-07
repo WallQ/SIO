@@ -201,6 +201,17 @@ export const insertCustomersDim = async (
 
 	const parsedCustomersDimCountry: (typeof customerDimension.$inferInsert)[] =
 		selectedCustomers.map((customer) => {
+			const sk = `SK_${customer.name.replace(/\s+/g, '-')}_${customer.address.country.replace(/\s+/g, '-')}`;
+			return {
+				sk,
+				name: customer.name,
+				city: null,
+				country: customer.address.country,
+			};
+		});
+
+	const parsedCustomersDimCityCountry: (typeof customerDimension.$inferInsert)[] =
+		selectedCustomers.map((customer) => {
 			const sk = `SK_${customer.name.replace(/\s+/g, '-')}_${customer.address.city.replace(/\s+/g, '-')}_${customer.address.country.replace(/\s+/g, '-')}`;
 			return {
 				sk,
@@ -214,6 +225,7 @@ export const insertCustomersDim = async (
 		...parsedCustomersDimName,
 		...parsedCustomersDimCity,
 		...parsedCustomersDimCountry,
+		...parsedCustomersDimCityCountry,
 	];
 
 	const insertedCustomersDim = await dbStar
@@ -249,6 +261,16 @@ export const insertGeoDim = async (
 
 	const parsedGeoDimCities: (typeof geoDimension.$inferInsert)[] =
 		selectedAddresses.map((address) => {
+			const sk = `SK_${address.city.replace(/\s+/g, '-')}`;
+			return {
+				sk,
+				city: address.city,
+				country: null,
+			};
+		});
+
+	const parsedGeoDimCountryCity: (typeof geoDimension.$inferInsert)[] =
+		selectedAddresses.map((address) => {
 			const sk = `SK_${address.country.replace(/\s+/g, '-')}_${address.city.replace(/\s+/g, '-')}`;
 			return {
 				sk,
@@ -260,6 +282,7 @@ export const insertGeoDim = async (
 	const parsedGeoDim: (typeof geoDimension.$inferInsert)[] = [
 		...parsedGeoDimCities,
 		...parsedGeoDimCountries,
+		...parsedGeoDimCountryCity,
 	];
 
 	const insertedGeoDim = await dbStar
