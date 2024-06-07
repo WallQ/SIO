@@ -201,17 +201,6 @@ export const insertCustomersDim = async (
 
 	const parsedCustomersDimCountry: (typeof customerDimension.$inferInsert)[] =
 		selectedCustomers.map((customer) => {
-			const sk = `SK_${customer.name.replace(/\s+/g, '-')}_${customer.address.country.replace(/\s+/g, '-')}`;
-			return {
-				sk,
-				name: customer.name,
-				city: null,
-				country: customer.address.country,
-			};
-		});
-
-	const parsedCustomersDimCityCountry: (typeof customerDimension.$inferInsert)[] =
-		selectedCustomers.map((customer) => {
 			const sk = `SK_${customer.name.replace(/\s+/g, '-')}_${customer.address.city.replace(/\s+/g, '-')}_${customer.address.country.replace(/\s+/g, '-')}`;
 			return {
 				sk,
@@ -225,7 +214,6 @@ export const insertCustomersDim = async (
 		...parsedCustomersDimName,
 		...parsedCustomersDimCity,
 		...parsedCustomersDimCountry,
-		...parsedCustomersDimCityCountry,
 	];
 
 	const insertedCustomersDim = await dbStar
@@ -249,16 +237,6 @@ export const insertGeoDim = async (
 		})
 		.from(addresses);
 
-	const parsedGeoDimCities: (typeof geoDimension.$inferInsert)[] =
-		selectedAddresses.map((address) => {
-			const sk = `SK_${address.city.replace(/\s+/g, '-')}`;
-			return {
-				sk,
-				city: address.city,
-				country: null,
-			};
-		});
-
 	const parsedGeoDimCountries: (typeof geoDimension.$inferInsert)[] =
 		selectedAddresses.map((address) => {
 			const sk = `SK_${address.country.replace(/\s+/g, '-')}`;
@@ -269,7 +247,7 @@ export const insertGeoDim = async (
 			};
 		});
 
-	const parsedGeoDimCountryCity: (typeof geoDimension.$inferInsert)[] =
+	const parsedGeoDimCities: (typeof geoDimension.$inferInsert)[] =
 		selectedAddresses.map((address) => {
 			const sk = `SK_${address.country.replace(/\s+/g, '-')}_${address.city.replace(/\s+/g, '-')}`;
 			return {
@@ -282,7 +260,6 @@ export const insertGeoDim = async (
 	const parsedGeoDim: (typeof geoDimension.$inferInsert)[] = [
 		...parsedGeoDimCities,
 		...parsedGeoDimCountries,
-		...parsedGeoDimCountryCity,
 	];
 
 	const insertedGeoDim = await dbStar
@@ -335,30 +312,14 @@ export const insertTimeDim = async (
 		selectedTime.flatMap((time) => {
 			const months = Array.from({ length: 12 }, (_, i) => i + 1);
 			return months.map((month) => {
-				const sk = `SK_${time.year}_${month}`;
+				const quarter = Math.ceil(month / 3);
+				const sk = `SK_${time.year}_${quarter}_${month}`;
 				return {
 					sk,
 					year: time.year,
 					month: month.toString(),
-					quarter: null,
+					quarter: quarter.toString(),
 				};
-			});
-		});
-
-	const parsedTimeDimYearQuarterMonth: (typeof timeDimension.$inferInsert)[] =
-		selectedTime.flatMap((time) => {
-			const quarters = Array.from({ length: 4 }, (_, i) => i + 1);
-			const months = Array.from({ length: 12 }, (_, i) => i + 1);
-			return quarters.flatMap((quarter) => {
-				return months.map((month) => {
-					const sk = `SK_${time.year}_${quarter}_${month}`;
-					return {
-						sk,
-						year: time.year,
-						quarter: quarter.toString(),
-						month: month.toString(),
-					};
-				});
 			});
 		});
 
@@ -366,7 +327,6 @@ export const insertTimeDim = async (
 		...parsedTimeDimYear,
 		...parsedTimeDimQuarter,
 		...parsedTimeDimMonth,
-		...parsedTimeDimYearQuarterMonth,
 	];
 
 	const insertedTimeDim = await dbStar
