@@ -1304,7 +1304,8 @@ export const analitycs = async (
 		.selectDistinct({
 			country: geoDimension.country,
 		})
-		.from(geoDimension);
+		.from(geoDimension)
+		.where(sql`COALESCE(country, '') != ''`);
 	if (!selectedCountries) throw new Error('Failed to get countries!');
 
 	const selectedCities = await dbStar
