@@ -1,26 +1,20 @@
 'use client';
 
 import { useCompanyStore } from '@/stores/companies';
-import { api } from '@/trpc/react';
-import TotalSalesRevenueByYear from './_components/analytics/total-sales-revenue-by-year';
 import { useSelectedYearStore } from '@/stores/years';
+import { api } from '@/trpc/react';
+
+import TotalSalesRevenueByYear from './_components/analytics/total-sales-revenue-by-year';
 
 export default function Dashboard() {
 	const selectedCompany = useCompanyStore((state) => state.selectedCompany);
 	const selectedYear = useSelectedYearStore((state) => state.selectedYear);
 
-	const years = api.years.getYears.useQuery();
-	const companies = api.companies.getCompanies.useQuery();
-
-	interface QueryOptions {
-		companyId?: number;
-		year?: number;
-	}
-
-	const totalSalesRevenueByYear = api.overview.totalSalesRevenueByYear.useQuery({
-		companyId: selectedCompany ? selectedCompany.id : 0,
-		year: selectedYear ? parseInt(selectedYear, 10) : new Date().getFullYear(),
-	} as QueryOptions);
+	const totalSalesRevenueByYear =
+		api.overview.totalSalesRevenueByYear.useQuery({
+			company: selectedCompany ? selectedCompany.name : '',
+			year: selectedYear ? parseInt(selectedYear) : 2023,
+		});
 
 	return (
 		<main className='flex w-full flex-1 flex-col items-start justify-between gap-4 p-4 sm:px-6 sm:py-0'>
@@ -30,7 +24,9 @@ export default function Dashboard() {
 				) : totalSalesRevenueByYear.isError ? (
 					<div>Error: {totalSalesRevenueByYear.error.message}</div>
 				) : totalSalesRevenueByYear.data ? (
-					<TotalSalesRevenueByYear data={totalSalesRevenueByYear.data} />
+					<TotalSalesRevenueByYear
+						data={totalSalesRevenueByYear.data}
+					/>
 				) : null}
 				<div className='flex flex-col items-center justify-between gap-4'>
 					{/* {totalSalesRevenueThisMonth.isLoading ? (

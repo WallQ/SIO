@@ -10,13 +10,17 @@
 // import { eq, sql } from 'drizzle-orm';
 // import { z } from 'zod';
 
-import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { companyDimension, salesFact, timeDimension } from "@/server/db/star-schema";
-import { useCompanyStore } from "@/stores/companies";
-import { eq, sql } from "drizzle-orm";
-import { companies, invoices } from "@/server/db/relational-schema";
-import { monthNumberToString } from "@/lib/utils";
+import { companies, invoices } from '@/server/db/relational-schema';
+import {
+	companyDimension,
+	salesFact,
+	timeDimension,
+} from '@/server/db/star-schema';
+import { eq, sql } from 'drizzle-orm';
+import { z } from 'zod';
+
+import { monthNumberToString } from '@/lib/utils';
 
 // import {
 // 	formatNumber,
@@ -25,101 +29,93 @@ import { monthNumberToString } from "@/lib/utils";
 // } from '@/lib/utils';
 
 export const overviewRouter = createTRPCRouter({
-    totalSalesRevenueByYear: protectedProcedure
-        .input(
-            z.object({
-                year: z.number().optional().default(2023),
-            }),
-        )
-        .query(async ({ input, ctx }) => {
-            const { selectedCompany } = useCompanyStore.getState();
-            if (!selectedCompany) {
-                console.log('No company selected!');
-                return null; // Return null or an empty object
-            }
+	totalSalesRevenueByYear: protectedProcedure
+		.input(
+			z.object({
+				company: z.string().default(''),
+				year: z.number().default(2023),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			const skCompany = await ctx.db.star
+				.select({
+					sk: companyDimension.sk,
+				})
+				.from(companyDimension)
+				.where(
+					sql`name = ${input.company} AND COALESCE(city, '') = '' AND COALESCE(country, '') = ''`,
+				)
+				.then((res) => res[0]);
+			if (!skCompany) throw new Error('Failed to get SK Company!');
 
-            const companyName = selectedCompany.name;
-            console.log(`Selected company: ${companyName}`);
+			const skTime = await ctx.db.star
+				.select({
+					sk: timeDimension.sk,
+				})
+				.from(timeDimension)
+				.where(
+					sql`year = ${input.year} AND COALESCE(quarter, '') = '' AND COALESCE(month, '') = ''`,
+				)
+				.then((res) => res[0]);
+			if (!skTime) throw new Error('Failed to get SK Time!');
 
-            const skCompany = await ctx.db.star
-                .select({
-                    sk: companyDimension.sk,
-                })
-                .from(companyDimension)
-                .where(
-                    sql`name = ${companyName} AND COALESCE(city, '') = '' AND COALESCE(country, '') = ''`,
-                )
-                .then((res) => res[0]);
+			const monthlySales = await ctx.db.relational
+				.select({
+					month: sql<number>`EXTRACT(MONTH FROM invoices.date)`.as(
+						'month',
+					),
+					amount: sql<number>`SUM(gross_total)`.as('amount'),
+				})
+				.from(invoices)
+				.innerJoin(companies, eq(invoices.company_id, companies.id))
+				.where(
+					sql`EXTRACT(YEAR FROM invoices.date) = ${input.year} AND companies.name = ${companyName}`,
+				)
+				.groupBy(sql<number>`EXTRACT(MONTH FROM invoices.date)`)
+				.orderBy(sql<number>`EXTRACT(MONTH FROM invoices.date)`);
 
-            if (!skCompany) throw new Error('Failed to get SK Company!');
+			const totalSales = await ctx.db.relational
+				.select({
+					total: sql<number>`SUM(gross_total)`.as('total'),
+				})
+				.from(invoices)
+				.innerJoin(companies, eq(invoices.company_id, companies.id))
+				.where(
+					sql`EXTRACT(YEAR FROM invoices.date) = ${input.year} AND companies.name = ${companyName}`,
+				)
+				.then((res) => res[0]);
 
-            const skTime = await ctx.db.star
-                .select({
-                    sk: timeDimension.sk,
-                })
-                .from(timeDimension)
-                .where(
-                    sql`year = ${input.year} AND COALESCE(quarter, '') = '' AND COALESCE(month, '') = ''`,
-                )
-                .then((res) => res[0]);
+			if (!totalSales) throw new Error('Failed to get total sales!');
 
-            if (!skTime) throw new Error('Failed to get SK Time!');
+			const composedSK = `${skCompany.sk}_${skTime.sk}`;
+			const result = totalSales.total ? totalSales.total.toString() : '0';
 
-            const monthlySales = await ctx.db.relational
-                .select({
-                    month: sql<number>`EXTRACT(MONTH FROM invoices.date)`.as('month'),
-                    amount: sql<number>`SUM(gross_total)`.as('amount'),
-                })
-                .from(invoices)
-                .innerJoin(companies, eq(invoices.company_id, companies.id))
-                .where(
-                    sql`EXTRACT(YEAR FROM invoices.date) = ${input.year} AND companies.name = ${companyName}`,
-                )
-                .groupBy(sql<number>`EXTRACT(MONTH FROM invoices.date)`)
-                .orderBy(sql<number>`EXTRACT(MONTH FROM invoices.date)`);
+			await ctx.db.star
+				.insert(salesFact)
+				.values({
+					sk: composedSK,
+					value: result,
+				})
+				.onConflictDoUpdate({
+					target: salesFact.sk,
+					set: {
+						value: result,
+					},
+				});
 
-            const totalSales = await ctx.db.relational
-                .select({
-                    total: sql<number>`SUM(gross_total)`.as('total'),
-                })
-                .from(invoices)
-                .innerJoin(companies, eq(invoices.company_id, companies.id))
-                .where(
-                    sql`EXTRACT(YEAR FROM invoices.date) = ${input.year} AND companies.name = ${companyName}`,
-                )
-                .then((res) => res[0]);
+			const formattedMonthlySales = monthlySales.map((sale) => ({
+				month: monthNumberToString(sale.month),
+				amount: sale.amount,
+			}));
 
-            if (!totalSales) throw new Error('Failed to get total sales!');
+			console.log('Total sales:', totalSales.total);
+			console.log('Monthly sales:', formattedMonthlySales);
 
-            const composedSK = `${skCompany.sk}_${skTime.sk}`;
-            const result = totalSales.total ? totalSales.total.toString() : '0';
-
-            await ctx.db.star
-                .insert(salesFact)
-                .values({
-                    sk: composedSK,
-                    value: result,
-                })
-                .onConflictDoUpdate({
-                    target: salesFact.sk,
-                    set: {
-                        value: result,
-                    },
-                });
-
-            const formattedMonthlySales = monthlySales.map((sale) => ({
-                month: monthNumberToString(sale.month),
-                amount: sale.amount,
-            }));
-
-            console.log('Total sales:', totalSales.total);
-            console.log('Monthly sales:', formattedMonthlySales);
-
-            return {
-                total_sales: totalSales ? totalSales.total : 0,
-                sales_by_month: formattedMonthlySales,
-            };
-        }),
+			return {
+				total_sales: totalSales ? totalSales.total : 0,
+				sales_by_month: formattedMonthlySales,
+			};
+		}),
 });
 
 // export const overviewRouter = createTRPCRouter({
