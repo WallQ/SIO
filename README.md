@@ -18,10 +18,10 @@ git clone <repository-url>
 pnpm install
 ```
 
-3. Set up the environment variables(look into .env.example file):
+3. Set up the environment variables:
 
 ```bash
-cp .env
+cp .env.example .env
 ```
 
 4. Set up the database:
@@ -31,7 +31,7 @@ chmod +x ./start-database.sh
 ./start-database.sh
 ```
 
-5. Alter the database schema:
+5. Push the schema directly into the database:
 
 ```bash
 pnpm run db:push
@@ -43,7 +43,9 @@ pnpm run db:push
 pnpm run dev
 ```
 
-7. (Optional) Interact with the databases with a GUI tool:
+7. (Optional) Other useful commands:
+
+Interact with the database with a GUI tool
 
 ```bash
 pnpm run db:studio-a
